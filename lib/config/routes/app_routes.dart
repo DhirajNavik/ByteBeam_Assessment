@@ -5,7 +5,7 @@ class AppRoutes {
     GoRoute(
       path: AppRoutePath.initialPage.path,
       name: AppRoutePath.initialPage.pathName,
-      builder: (_, _) => TestPage(),
+      builder: (_, _) => DashboardView(),
     ),
   ];
 }

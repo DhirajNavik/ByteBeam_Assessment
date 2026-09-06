@@ -8,4 +8,4 @@ export 'package:injectable/injectable.dart';
 export 'dart:async';
 
 //Pages
-export 'package:bytebeam_assessment/feature/telemetry/presentation/pages/test.dart';
+export 'package:bytebeam_assessment/feature/telemetry/presentation/pages/dashboard_view.dart';

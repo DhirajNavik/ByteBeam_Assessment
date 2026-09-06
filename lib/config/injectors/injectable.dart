@@ -9,4 +9,4 @@ final serviceLocator = GetIt.instance;
   preferRelativeImports: true, // default
   asExtension: true, // default
 )
-void configureDependencies() => serviceLocator.init();
+Future<void> configureDependencies() => serviceLocator.init();
