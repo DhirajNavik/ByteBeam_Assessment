@@ -9,6 +9,7 @@ abstract final class TelemetryTable {
   static const String speed = 'speed';
   static const String batteryTemp = 'battery_temp';
   static const String range = 'range_km';
+  static const String odometer = 'odometer';
   static const String ignition = 'ignition';
   static const String latitude = 'lat';
   static const String longitude = 'lon';
@@ -23,6 +24,7 @@ abstract final class TelemetryTable {
       $speed DOUBLE,
       $batteryTemp DOUBLE,
       $range DOUBLE,
+      $odometer DOUBLE,
       $ignition DOUBLE,
       $latitude DOUBLE,
       $longitude DOUBLE,

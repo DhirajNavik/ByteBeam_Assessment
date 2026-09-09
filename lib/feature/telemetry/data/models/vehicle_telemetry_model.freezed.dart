@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VehicleTelemetryModel {
 
- int get vehicleId; double? get soc; double? get speed; double? get batteryTemp; double? get range; DateTime? get lastPingAt; String get status;
+ int get vehicleId; double? get soc; double? get speed; double? get batteryTemp; double? get range; double? get odometer; DateTime? get lastPingAt; String get status;
 /// Create a copy of VehicleTelemetryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $VehicleTelemetryModelCopyWith<VehicleTelemetryModel> get copyWith => _$VehicleT
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VehicleTelemetryModel&&(identical(other.vehicleId, vehicleId) || other.vehicleId == vehicleId)&&(identical(other.soc, soc) || other.soc == soc)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.batteryTemp, batteryTemp) || other.batteryTemp == batteryTemp)&&(identical(other.range, range) || other.range == range)&&(identical(other.lastPingAt, lastPingAt) || other.lastPingAt == lastPingAt)&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VehicleTelemetryModel&&(identical(other.vehicleId, vehicleId) || other.vehicleId == vehicleId)&&(identical(other.soc, soc) || other.soc == soc)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.batteryTemp, batteryTemp) || other.batteryTemp == batteryTemp)&&(identical(other.range, range) || other.range == range)&&(identical(other.odometer, odometer) || other.odometer == odometer)&&(identical(other.lastPingAt, lastPingAt) || other.lastPingAt == lastPingAt)&&(identical(other.status, status) || other.status == status));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,vehicleId,soc,speed,batteryTemp,range,lastPingAt,status);
+int get hashCode => Object.hash(runtimeType,vehicleId,soc,speed,batteryTemp,range,odometer,lastPingAt,status);
 
 @override
 String toString() {
-  return 'VehicleTelemetryModel(vehicleId: $vehicleId, soc: $soc, speed: $speed, batteryTemp: $batteryTemp, range: $range, lastPingAt: $lastPingAt, status: $status)';
+  return 'VehicleTelemetryModel(vehicleId: $vehicleId, soc: $soc, speed: $speed, batteryTemp: $batteryTemp, range: $range, odometer: $odometer, lastPingAt: $lastPingAt, status: $status)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $VehicleTelemetryModelCopyWith<$Res>  {
   factory $VehicleTelemetryModelCopyWith(VehicleTelemetryModel value, $Res Function(VehicleTelemetryModel) _then) = _$VehicleTelemetryModelCopyWithImpl;
 @useResult
 $Res call({
- int vehicleId, double? soc, double? speed, double? batteryTemp, double? range, DateTime? lastPingAt, String status
+ int vehicleId, double? soc, double? speed, double? batteryTemp, double? range, double? odometer, DateTime? lastPingAt, String status
 });
 
 
@@ -63,13 +63,14 @@ class _$VehicleTelemetryModelCopyWithImpl<$Res>
 
 /// Create a copy of VehicleTelemetryModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? vehicleId = null,Object? soc = freezed,Object? speed = freezed,Object? batteryTemp = freezed,Object? range = freezed,Object? lastPingAt = freezed,Object? status = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? vehicleId = null,Object? soc = freezed,Object? speed = freezed,Object? batteryTemp = freezed,Object? range = freezed,Object? odometer = freezed,Object? lastPingAt = freezed,Object? status = null,}) {
   return _then(VehicleTelemetryModel(
 vehicleId: null == vehicleId ? _self.vehicleId : vehicleId // ignore: cast_nullable_to_non_nullable
 as int,soc: freezed == soc ? _self.soc : soc // ignore: cast_nullable_to_non_nullable
 as double?,speed: freezed == speed ? _self.speed : speed // ignore: cast_nullable_to_non_nullable
 as double?,batteryTemp: freezed == batteryTemp ? _self.batteryTemp : batteryTemp // ignore: cast_nullable_to_non_nullable
 as double?,range: freezed == range ? _self.range : range // ignore: cast_nullable_to_non_nullable
+as double?,odometer: freezed == odometer ? _self.odometer : odometer // ignore: cast_nullable_to_non_nullable
 as double?,lastPingAt: freezed == lastPingAt ? _self.lastPingAt : lastPingAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,
@@ -157,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  DateTime? lastPingAt,  String status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  double? odometer,  DateTime? lastPingAt,  String status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VehicleTelemetryModel() when $default != null:
-return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.range,_that.lastPingAt,_that.status);case _:
+return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.range,_that.odometer,_that.lastPingAt,_that.status);case _:
   return orElse();
 
 }
@@ -178,10 +179,10 @@ return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.ra
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  DateTime? lastPingAt,  String status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  double? odometer,  DateTime? lastPingAt,  String status)  $default,) {final _that = this;
 switch (_that) {
 case _VehicleTelemetryModel():
-return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.range,_that.lastPingAt,_that.status);case _:
+return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.range,_that.odometer,_that.lastPingAt,_that.status);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +199,10 @@ return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.ra
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  DateTime? lastPingAt,  String status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  double? odometer,  DateTime? lastPingAt,  String status)?  $default,) {final _that = this;
 switch (_that) {
 case _VehicleTelemetryModel() when $default != null:
-return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.range,_that.lastPingAt,_that.status);case _:
+return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.range,_that.odometer,_that.lastPingAt,_that.status);case _:
   return null;
 
 }
@@ -213,7 +214,7 @@ return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.ra
 
 
 class _VehicleTelemetryModel extends VehicleTelemetryModel {
-  const _VehicleTelemetryModel({required this.vehicleId, required this.soc, required this.speed, required this.batteryTemp, required this.range, required this.lastPingAt, required this.status}): super._();
+  const _VehicleTelemetryModel({required this.vehicleId, required this.soc, required this.speed, required this.batteryTemp, required this.range, required this.odometer, required this.lastPingAt, required this.status}): super._();
   
 
 @override final  int vehicleId;
@@ -221,6 +222,7 @@ class _VehicleTelemetryModel extends VehicleTelemetryModel {
 @override final  double? speed;
 @override final  double? batteryTemp;
 @override final  double? range;
+@override final  double? odometer;
 @override final  DateTime? lastPingAt;
 @override final  String status;
 
@@ -234,16 +236,16 @@ _$VehicleTelemetryModelCopyWith<_VehicleTelemetryModel> get copyWith => __$Vehic
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VehicleTelemetryModel&&(identical(other.vehicleId, vehicleId) || other.vehicleId == vehicleId)&&(identical(other.soc, soc) || other.soc == soc)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.batteryTemp, batteryTemp) || other.batteryTemp == batteryTemp)&&(identical(other.range, range) || other.range == range)&&(identical(other.lastPingAt, lastPingAt) || other.lastPingAt == lastPingAt)&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VehicleTelemetryModel&&(identical(other.vehicleId, vehicleId) || other.vehicleId == vehicleId)&&(identical(other.soc, soc) || other.soc == soc)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.batteryTemp, batteryTemp) || other.batteryTemp == batteryTemp)&&(identical(other.range, range) || other.range == range)&&(identical(other.odometer, odometer) || other.odometer == odometer)&&(identical(other.lastPingAt, lastPingAt) || other.lastPingAt == lastPingAt)&&(identical(other.status, status) || other.status == status));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,vehicleId,soc,speed,batteryTemp,range,lastPingAt,status);
+int get hashCode => Object.hash(runtimeType,vehicleId,soc,speed,batteryTemp,range,odometer,lastPingAt,status);
 
 @override
 String toString() {
-  return 'VehicleTelemetryModel(vehicleId: $vehicleId, soc: $soc, speed: $speed, batteryTemp: $batteryTemp, range: $range, lastPingAt: $lastPingAt, status: $status)';
+  return 'VehicleTelemetryModel(vehicleId: $vehicleId, soc: $soc, speed: $speed, batteryTemp: $batteryTemp, range: $range, odometer: $odometer, lastPingAt: $lastPingAt, status: $status)';
 }
 
 
@@ -254,7 +256,7 @@ abstract mixin class _$VehicleTelemetryModelCopyWith<$Res> implements $VehicleTe
   factory _$VehicleTelemetryModelCopyWith(_VehicleTelemetryModel value, $Res Function(_VehicleTelemetryModel) _then) = __$VehicleTelemetryModelCopyWithImpl;
 @override @useResult
 $Res call({
- int vehicleId, double? soc, double? speed, double? batteryTemp, double? range, DateTime? lastPingAt, String status
+ int vehicleId, double? soc, double? speed, double? batteryTemp, double? range, double? odometer, DateTime? lastPingAt, String status
 });
 
 
@@ -271,13 +273,14 @@ class __$VehicleTelemetryModelCopyWithImpl<$Res>
 
 /// Create a copy of VehicleTelemetryModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? vehicleId = null,Object? soc = freezed,Object? speed = freezed,Object? batteryTemp = freezed,Object? range = freezed,Object? lastPingAt = freezed,Object? status = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? vehicleId = null,Object? soc = freezed,Object? speed = freezed,Object? batteryTemp = freezed,Object? range = freezed,Object? odometer = freezed,Object? lastPingAt = freezed,Object? status = null,}) {
   return _then(_VehicleTelemetryModel(
 vehicleId: null == vehicleId ? _self.vehicleId : vehicleId // ignore: cast_nullable_to_non_nullable
 as int,soc: freezed == soc ? _self.soc : soc // ignore: cast_nullable_to_non_nullable
 as double?,speed: freezed == speed ? _self.speed : speed // ignore: cast_nullable_to_non_nullable
 as double?,batteryTemp: freezed == batteryTemp ? _self.batteryTemp : batteryTemp // ignore: cast_nullable_to_non_nullable
 as double?,range: freezed == range ? _self.range : range // ignore: cast_nullable_to_non_nullable
+as double?,odometer: freezed == odometer ? _self.odometer : odometer // ignore: cast_nullable_to_non_nullable
 as double?,lastPingAt: freezed == lastPingAt ? _self.lastPingAt : lastPingAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,

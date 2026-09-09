@@ -30,6 +30,7 @@ abstract final class TelemetryQuery {
         t.${TelemetryTable.speed},
         t.${TelemetryTable.batteryTemp},
         t.${TelemetryTable.range},
+        t.${TelemetryTable.odometer},
         t.${TelemetryTable.ignition},
         t.${TelemetryTable.latitude},
         t.${TelemetryTable.longitude},

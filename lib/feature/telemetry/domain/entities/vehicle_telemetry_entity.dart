@@ -6,6 +6,7 @@ class VehicleTelemetryEntity extends Equatable {
   final double? speed;
   final double? batteryTemp;
   final double? range;
+  final double? odometer;
   final DateTime? lastPingAt;
   final String status;
 
@@ -15,6 +16,7 @@ class VehicleTelemetryEntity extends Equatable {
     required this.speed,
     required this.batteryTemp,
     required this.range,
+    required this.odometer,
     required this.lastPingAt,
     required this.status,
   });
@@ -34,6 +36,7 @@ class VehicleTelemetryEntity extends Equatable {
     speed,
     batteryTemp,
     range,
+    odometer,
     lastPingAt,
     status,
   ];

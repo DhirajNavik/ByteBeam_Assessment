@@ -1,3 +1,4 @@
+import 'package:bytebeam_assessment/core/database/duck_db_migration.dart';
 import 'package:dart_duckdb/dart_duckdb.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,6 +22,7 @@ abstract class DuckDBModule {
   Future<Connection> provideConnection(Database database) async {
     final connection = await duckdb.connect(database);
     await DuckDBSchema.createTables(connection);
+    await DuckDBMigration.migrate(connection);
     return connection;
   }
 }

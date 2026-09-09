@@ -14,6 +14,7 @@ abstract class VehicleTelemetryModel with _$VehicleTelemetryModel {
     required double? speed,
     required double? batteryTemp,
     required double? range,
+    required double? odometer,
     required DateTime? lastPingAt,
     required String status,
   }) = _VehicleTelemetryModel;
@@ -25,6 +26,7 @@ abstract class VehicleTelemetryModel with _$VehicleTelemetryModel {
       speed: json[TelemetryTable.speed],
       batteryTemp: json[TelemetryTable.batteryTemp],
       range: json[TelemetryTable.range],
+      odometer: json[TelemetryTable.odometer],
       lastPingAt: json[TelemetryTable.lastSeen],
       status: "Offline",
     );
@@ -39,6 +41,7 @@ abstract class VehicleTelemetryModel with _$VehicleTelemetryModel {
       range: range,
       lastPingAt: lastPingAt,
       status: status,
+      odometer:odometer
     );
   }
 }

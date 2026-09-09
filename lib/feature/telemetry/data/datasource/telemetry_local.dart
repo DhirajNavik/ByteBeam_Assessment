@@ -32,6 +32,7 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
       final response = await _database.query(
         TelemetryQuery.fetchNewTelemetry(vehicleIds),
       );
+      print(response);
 
       yield response.parseList(VehicleTelemetryModel.fromLocalJson, [
         VehicleTable.id,
@@ -40,6 +41,7 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
         TelemetryTable.speed,
         TelemetryTable.batteryTemp,
         TelemetryTable.range,
+        TelemetryTable.odometer,
         TelemetryTable.ignition,
         TelemetryTable.latitude,
         TelemetryTable.longitude,

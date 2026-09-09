@@ -448,6 +448,10 @@ class _VehicleTile extends StatelessWidget {
                     label: 'Speed',
                     value: _fmt(telemetry?.speed, ' km/h', decimals: 0),
                   ),
+                   _SignalTile(
+                    label: 'Odo',
+                    value: _fmt(telemetry?.odometer, '°C',decimals: 0),
+                  ),
                   _SignalTile(
                     label: 'Temp',
                     value: _fmt(telemetry?.batteryTemp, '°C'),

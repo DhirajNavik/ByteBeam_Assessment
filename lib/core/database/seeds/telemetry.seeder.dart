@@ -66,6 +66,7 @@ abstract final class TelemetrySeeder {
         appender.append(17.3850);
         appender.append(78.4867);
         appender.append(now);
+        appender.append(6.7);
         appender.endRow();
       }
 
