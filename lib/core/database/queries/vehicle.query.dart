@@ -24,4 +24,9 @@ abstract final class VehicleQuery {
       ON v.${VehicleTable.id} = s.${VehicleTable.id}
     ORDER BY v.${VehicleTable.id}
   ''';
+
+  final counts =
+      ''' SELECT ${VehicleTable.id} 
+      FROM ${DBPath.vehiclesTable} 
+      ORDER BY ${VehicleTable.id} ''';
 }

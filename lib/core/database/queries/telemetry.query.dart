@@ -16,23 +16,33 @@ abstract final class TelemetryQuery {
     final ids = vehicleIds.join(',');
 
     return '''
+      WITH latest_sequence AS (
+        SELECT COALESCE(
+          MAX(${TelemetryTable.sequenceId}),
+          0
+        ) AS max_sequence
+        FROM ${DBPath.telemetryTable}
+      )
       SELECT
-        ${VehicleTable.id},
-        ${TelemetryTable.soc},
-        ${TelemetryTable.speed},
-        ${TelemetryTable.batteryTemp},
-        ${TelemetryTable.range},
-        ${TelemetryTable.ignition},
-        ${TelemetryTable.latitude},
-        ${TelemetryTable.longitude},
-        ${TelemetryTable.lastSeen}
-      FROM ${DBPath.telemetryTable} t
-      WHERE t.${VehicleTable.id} IN ($ids)
-      QUALIFY ROW_NUMBER() OVER (
-        PARTITION BY t.${VehicleTable.id}
-        ORDER BY t.${TelemetryTable.sequenceId} DESC
-      ) = 1
-      ORDER BY t.${VehicleTable.id}
+        t.${VehicleTable.id},
+        t.${TelemetryTable.sequenceId},
+        t.${TelemetryTable.soc},
+        t.${TelemetryTable.speed},
+        t.${TelemetryTable.batteryTemp},
+        t.${TelemetryTable.range},
+        t.${TelemetryTable.ignition},
+        t.${TelemetryTable.latitude},
+        t.${TelemetryTable.longitude},
+        t.${TelemetryTable.lastSeen}
+        FROM ${DBPath.telemetryTable} t
+        CROSS JOIN latest_sequence ls
+        WHERE t.${VehicleTable.id} IN ($ids)
+          AND t.${TelemetryTable.sequenceId} <= ls.max_sequence
+        QUALIFY ROW_NUMBER() OVER (
+          PARTITION BY t.${VehicleTable.id}
+          ORDER BY t.${TelemetryTable.sequenceId} DESC
+        ) = 1
+        ORDER BY t.${VehicleTable.id}
     ''';
   }
 }

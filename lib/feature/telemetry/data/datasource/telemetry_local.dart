@@ -28,21 +28,25 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
   Stream<List<VehicleTelemetryModel>> watchVehicleTelemetry(
     List<int> vehicleIds,
   ) async* {
-    final response = await _database.query(
-      TelemetryQuery.fetchNewTelemetry(vehicleIds),
-    );
-    yield response.parseList(VehicleTelemetryModel.fromLocalJson, [
-      VehicleTable.id,
-      TelemetryTable.soc,
-      TelemetryTable.speed,
-      TelemetryTable.batteryTemp,
-      TelemetryTable.range,
-      TelemetryTable.ignition,
-      TelemetryTable.latitude,
-      TelemetryTable.longitude,
-      TelemetryTable.lastSeen,
-    ]);
+    while (true) {
+      final response = await _database.query(
+        TelemetryQuery.fetchNewTelemetry(vehicleIds),
+      );
 
-    await Future<void>.delayed(const Duration(milliseconds: 500));
+      yield response.parseList(VehicleTelemetryModel.fromLocalJson, [
+        VehicleTable.id,
+        TelemetryTable.sequenceId,
+        TelemetryTable.soc,
+        TelemetryTable.speed,
+        TelemetryTable.batteryTemp,
+        TelemetryTable.range,
+        TelemetryTable.ignition,
+        TelemetryTable.latitude,
+        TelemetryTable.longitude,
+        TelemetryTable.lastSeen,
+      ]);
+
+      await Future<void>.delayed(const Duration(seconds: 2));
+    }
   }
 }
