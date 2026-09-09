@@ -1,5 +1,5 @@
 import 'package:bytebeam_assessment/core/database/db_path.dart';
-import 'package:bytebeam_assessment/core/database/tables/snapshot.table.dart';
+import 'package:bytebeam_assessment/core/database/tables/telemetry.table.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
 
 abstract final class TelemetryQuery {

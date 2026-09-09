@@ -1,4 +1,4 @@
-import 'package:bytebeam_assessment/core/database/tables/snapshot.table.dart';
+import 'package:bytebeam_assessment/core/database/tables/telemetry.table.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

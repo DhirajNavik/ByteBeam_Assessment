@@ -14,24 +14,7 @@ abstract final class TelemetryTable {
   static const String longitude = 'lon';
   static const String lastSeen = 'last_seen';
 
-  static const String createSnapshotTable =
-      '''
-    CREATE TABLE IF NOT EXISTS ${DBPath.snapshotTable} (
-      ${VehicleTable.id} INTEGER PRIMARY KEY NOT NULL,
-      $soc DOUBLE,
-      $speed DOUBLE,
-      $batteryTemp DOUBLE,
-      $range DOUBLE,
-      $ignition DOUBLE,
-      $latitude DOUBLE,
-      $longitude DOUBLE,
-      $lastSeen TIMESTAMP,
-      FOREIGN KEY (${VehicleTable.id})
-        REFERENCES ${DBPath.vehiclesTable}(${VehicleTable.id})
-    )
-  ''';
-
-  static const String createTelemetryTable =
+  static const String createTable =
       '''
     CREATE TABLE IF NOT EXISTS ${DBPath.telemetryTable} (
       $sequenceId BIGINT PRIMARY KEY NOT NULL,

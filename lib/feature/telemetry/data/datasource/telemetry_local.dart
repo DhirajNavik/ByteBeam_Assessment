@@ -1,6 +1,6 @@
 import 'package:bytebeam_assessment/core/database/queries/telemetry.query.dart';
 import 'package:bytebeam_assessment/core/database/queries/vehicle.query.dart';
-import 'package:bytebeam_assessment/core/database/tables/snapshot.table.dart';
+import 'package:bytebeam_assessment/core/database/tables/telemetry.table.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
 import 'package:bytebeam_assessment/core/network/database_requester.dart';
 import 'package:bytebeam_assessment/core/extension/duck_db_parser_extension.dart';
@@ -46,7 +46,7 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
         TelemetryTable.lastSeen,
       ]);
 
-      await Future<void>.delayed(const Duration(seconds: 2));
+      await Future<void>.delayed(const Duration(seconds: 1));
     }
   }
 }
