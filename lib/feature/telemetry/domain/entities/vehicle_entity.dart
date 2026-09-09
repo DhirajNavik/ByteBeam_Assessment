@@ -1,4 +1,5 @@
-class VehicleEntity {
+
+class VehicleEntity  {
   final int id;
   final String registration;
   final String model;
@@ -8,4 +9,5 @@ class VehicleEntity {
     required this.registration,
     required this.model,
   });
+
 }

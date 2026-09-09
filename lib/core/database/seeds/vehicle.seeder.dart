@@ -31,7 +31,7 @@ abstract final class VehicleSeeder {
   static Future<void> seed(Connection connection) async {
     final result = await connection.query('''
       SELECT COUNT(*)
-      FROM ${DBPath.vehiclesTabel}
+      FROM ${DBPath.vehiclesTable}
       ''');
 
     final totalVehicles = (result.fetchAll().first.first as num).toInt();
@@ -42,7 +42,7 @@ abstract final class VehicleSeeder {
       return;
     }
 
-    final appender = await connection.append(DBPath.vehiclesTabel, null);
+    final appender = await connection.append(DBPath.vehiclesTable, null);
 
     try {
       for (int i = 1; i <= vehicleCount; i++) {

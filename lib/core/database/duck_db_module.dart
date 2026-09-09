@@ -4,9 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 import 'db_path.dart';
-import 'duck_db_migration.dart';
 import 'duck_db_schema.dart';
-import 'duck_db_seeder.dart';
 
 @module
 abstract class DuckDBModule {
@@ -22,11 +20,7 @@ abstract class DuckDBModule {
   @lazySingleton
   Future<Connection> provideConnection(Database database) async {
     final connection = await duckdb.connect(database);
-
     await DuckDBSchema.createTables(connection);
-    await DuckDBMigration.migrate(database);
-    await DuckDBSeeder.createSeed(connection);
-
     return connection;
   }
 }

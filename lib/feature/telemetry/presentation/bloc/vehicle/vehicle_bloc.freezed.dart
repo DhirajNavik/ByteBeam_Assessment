@@ -321,13 +321,13 @@ return loaded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String message)?  error,TResult Function( List<VehicleEntity> books)?  loaded,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String message)?  error,TResult Function( List<VehicleEntity> vehicles)?  loaded,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Error() when error != null:
 return error(_that.message);case _Loaded() when loaded != null:
-return loaded(_that.books);case _:
+return loaded(_that.vehicles);case _:
   return orElse();
 
 }
@@ -345,13 +345,13 @@ return loaded(_that.books);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String message)  error,required TResult Function( List<VehicleEntity> books)  loaded,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String message)  error,required TResult Function( List<VehicleEntity> vehicles)  loaded,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Error():
 return error(_that.message);case _Loaded():
-return loaded(_that.books);case _:
+return loaded(_that.vehicles);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -368,13 +368,13 @@ return loaded(_that.books);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String message)?  error,TResult? Function( List<VehicleEntity> books)?  loaded,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String message)?  error,TResult? Function( List<VehicleEntity> vehicles)?  loaded,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Error() when error != null:
 return error(_that.message);case _Loaded() when loaded != null:
-return loaded(_that.books);case _:
+return loaded(_that.vehicles);case _:
   return null;
 
 }
@@ -516,14 +516,14 @@ as String,
 
 
 class _Loaded implements VehicleState {
-  const _Loaded({ List<VehicleEntity> books = const []}): _books = books;
+  const _Loaded({ List<VehicleEntity> vehicles = const []}): _vehicles = vehicles;
   
 
- final  List<VehicleEntity> _books;
-@JsonKey() List<VehicleEntity> get books {
-  if (_books is EqualUnmodifiableListView) return _books;
+ final  List<VehicleEntity> _vehicles;
+@JsonKey() List<VehicleEntity> get vehicles {
+  if (_vehicles is EqualUnmodifiableListView) return _vehicles;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_books);
+  return EqualUnmodifiableListView(_vehicles);
 }
 
 
@@ -537,16 +537,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._books, _books));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._vehicles, _vehicles));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_books));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_vehicles));
 
 @override
 String toString() {
-  return 'VehicleState.loaded(books: $books)';
+  return 'VehicleState.loaded(vehicles: $vehicles)';
 }
 
 
@@ -557,7 +557,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $VehicleStateCopyWith<$Re
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- List<VehicleEntity> books
+ List<VehicleEntity> vehicles
 });
 
 
@@ -574,9 +574,9 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of VehicleState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? books = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? vehicles = null,}) {
   return _then(_Loaded(
-books: null == books ? _self._books : books // ignore: cast_nullable_to_non_nullable
+vehicles: null == vehicles ? _self._vehicles : vehicles // ignore: cast_nullable_to_non_nullable
 as List<VehicleEntity>,
   ));
 }

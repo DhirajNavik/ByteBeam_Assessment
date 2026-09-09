@@ -22,16 +22,14 @@ class VehicleBloc extends Bloc<VehicleEvent, VehicleState> {
     _FetchVehicles event,
     Emitter<VehicleState> emit,
   ) async {
-    emit(const VehicleState.loading());
+    if (state is _Initial) {
+      emit(const VehicleState.loading());
+    }
 
     final result = await _fetchVehicleUseCase(const NoParams());
     result.match(
-      (failure) {
-        emit(VehicleState.error(failure.message));
-      },
-      (response) {
-        emit(VehicleState.loaded(books: response));
-      },
+      (failure) => emit(VehicleState.error(failure.message)),
+      (vehicles) => emit(VehicleState.loaded(vehicles: vehicles)),
     );
   }
 }

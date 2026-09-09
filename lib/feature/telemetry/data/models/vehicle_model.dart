@@ -15,13 +15,18 @@ abstract class VehicleModel with _$VehicleModel {
 
   factory VehicleModel.fromLocalJson(Map<String, dynamic> json) {
     return VehicleModel(
-      id: json[VehicleTable.id],
-      registration: json[VehicleTable.registrationNumber],
-      model: json[VehicleTable.model],
+      id: json[VehicleTable.id] as int,
+      registration: json[VehicleTable.registrationNumber] as String,
+      model: json[VehicleTable.model] as String,
     );
   }
 
   VehicleEntity toEntity() {
-    return VehicleEntity(id: id, registration: registration, model: model);
+    return VehicleEntity(
+      id: id,
+      registration: registration,
+      model: model,
+   
+    );
   }
 }

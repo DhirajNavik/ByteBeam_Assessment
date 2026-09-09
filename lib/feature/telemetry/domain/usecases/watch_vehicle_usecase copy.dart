@@ -1,19 +1,19 @@
 import 'package:bytebeam_assessment/config/routes/route_exports.dart';
 import 'package:bytebeam_assessment/core/usecase/failures.dart';
 import 'package:bytebeam_assessment/core/usecase/usecase.dart';
-import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
+import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/repositories/telemetry_repository.dart';
 import 'package:fpdart/fpdart.dart';
 
 @lazySingleton
-final class FetchVehiclesUsecase
-    extends UseCase<List<VehicleEntity>, NoParams> {
+final class WatchVehicleUsecase
+    extends UseCase<List<VehicleTelemetryEntity>, List<int>> {
   final TelemetryRepository _repository;
 
-   FetchVehiclesUsecase(this._repository);
+  WatchVehicleUsecase(this._repository);
 
   @override
-  Future<Either<Failure, List<VehicleEntity>>> call(NoParams params) {
-    return _repository.fetchAllVehicles();
+  Stream<Either<Failure, List<VehicleTelemetryEntity>>> watch(List<int> params) {
+    return _repository.watchVehicleTelemetry(params);
   }
 }
