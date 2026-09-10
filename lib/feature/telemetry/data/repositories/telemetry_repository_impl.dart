@@ -1,7 +1,7 @@
 import 'package:bytebeam_assessment/core/network/exception.dart';
 import 'package:bytebeam_assessment/core/usecase/failures.dart';
+import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/datasource/telemetry_datasource.dart';
-import 'package:bytebeam_assessment/feature/telemetry/data/models/vehicle_telemetry_model.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/repositories/telemetry_repository.dart';
@@ -41,7 +41,7 @@ class TelemetryRepositoryImpl implements TelemetryRepository {
   }
 
   @override
-  Stream<Either<Failure, Map<int, String>>> watchFleetStatus() async* {
+  Stream<Either<Failure, Map<int, FleetStatus>>> watchFleetStatus() async* {
     try {
       await for (final statusMap in _dataSource.watchFleetStatus()) {
         yield Right(statusMap);

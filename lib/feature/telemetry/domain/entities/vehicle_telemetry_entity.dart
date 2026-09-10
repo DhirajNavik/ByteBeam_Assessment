@@ -1,3 +1,4 @@
+import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:equatable/equatable.dart';
 
 class VehicleTelemetryEntity extends Equatable {
@@ -8,7 +9,7 @@ class VehicleTelemetryEntity extends Equatable {
   final double? range;
   final double? odometer;
   final DateTime? lastPingAt;
-  final String status;
+  final FleetStatus status;
 
   const VehicleTelemetryEntity({
     required this.vehicleId,

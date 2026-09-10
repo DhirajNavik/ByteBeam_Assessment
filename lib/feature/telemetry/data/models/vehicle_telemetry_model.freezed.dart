@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VehicleTelemetryModel {
 
- int get vehicleId; double? get soc; double? get speed; double? get batteryTemp; double? get range; double? get odometer; DateTime? get lastPingAt; String get status;
+ int get vehicleId; double? get soc; double? get speed; double? get batteryTemp; double? get range; double? get odometer; DateTime? get lastPingAt; FleetStatus get status;
 /// Create a copy of VehicleTelemetryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -46,7 +46,7 @@ abstract mixin class $VehicleTelemetryModelCopyWith<$Res>  {
   factory $VehicleTelemetryModelCopyWith(VehicleTelemetryModel value, $Res Function(VehicleTelemetryModel) _then) = _$VehicleTelemetryModelCopyWithImpl;
 @useResult
 $Res call({
- int vehicleId, double? soc, double? speed, double? batteryTemp, double? range, double? odometer, DateTime? lastPingAt, String status
+ int vehicleId, double? soc, double? speed, double? batteryTemp, double? range, double? odometer, DateTime? lastPingAt, FleetStatus status
 });
 
 
@@ -73,7 +73,7 @@ as double?,range: freezed == range ? _self.range : range // ignore: cast_nullabl
 as double?,odometer: freezed == odometer ? _self.odometer : odometer // ignore: cast_nullable_to_non_nullable
 as double?,lastPingAt: freezed == lastPingAt ? _self.lastPingAt : lastPingAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,
+as FleetStatus,
   ));
 }
 
@@ -158,7 +158,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  double? odometer,  DateTime? lastPingAt,  String status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  double? odometer,  DateTime? lastPingAt,  FleetStatus status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VehicleTelemetryModel() when $default != null:
 return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.range,_that.odometer,_that.lastPingAt,_that.status);case _:
@@ -179,7 +179,7 @@ return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.ra
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  double? odometer,  DateTime? lastPingAt,  String status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  double? odometer,  DateTime? lastPingAt,  FleetStatus status)  $default,) {final _that = this;
 switch (_that) {
 case _VehicleTelemetryModel():
 return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.range,_that.odometer,_that.lastPingAt,_that.status);case _:
@@ -199,7 +199,7 @@ return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.ra
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  double? odometer,  DateTime? lastPingAt,  String status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int vehicleId,  double? soc,  double? speed,  double? batteryTemp,  double? range,  double? odometer,  DateTime? lastPingAt,  FleetStatus status)?  $default,) {final _that = this;
 switch (_that) {
 case _VehicleTelemetryModel() when $default != null:
 return $default(_that.vehicleId,_that.soc,_that.speed,_that.batteryTemp,_that.range,_that.odometer,_that.lastPingAt,_that.status);case _:
@@ -224,7 +224,7 @@ class _VehicleTelemetryModel extends VehicleTelemetryModel {
 @override final  double? range;
 @override final  double? odometer;
 @override final  DateTime? lastPingAt;
-@override final  String status;
+@override final  FleetStatus status;
 
 /// Create a copy of VehicleTelemetryModel
 /// with the given fields replaced by the non-null parameter values.
@@ -256,7 +256,7 @@ abstract mixin class _$VehicleTelemetryModelCopyWith<$Res> implements $VehicleTe
   factory _$VehicleTelemetryModelCopyWith(_VehicleTelemetryModel value, $Res Function(_VehicleTelemetryModel) _then) = __$VehicleTelemetryModelCopyWithImpl;
 @override @useResult
 $Res call({
- int vehicleId, double? soc, double? speed, double? batteryTemp, double? range, double? odometer, DateTime? lastPingAt, String status
+ int vehicleId, double? soc, double? speed, double? batteryTemp, double? range, double? odometer, DateTime? lastPingAt, FleetStatus status
 });
 
 
@@ -283,7 +283,7 @@ as double?,range: freezed == range ? _self.range : range // ignore: cast_nullabl
 as double?,odometer: freezed == odometer ? _self.odometer : odometer // ignore: cast_nullable_to_non_nullable
 as double?,lastPingAt: freezed == lastPingAt ? _self.lastPingAt : lastPingAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,
+as FleetStatus,
   ));
 }
 

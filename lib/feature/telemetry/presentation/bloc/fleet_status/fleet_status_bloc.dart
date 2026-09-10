@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:bytebeam_assessment/config/routes/route_exports.dart';
 import 'package:bytebeam_assessment/core/usecase/usecase.dart';
+import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/usecases/watch_fleet_status_usecase.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

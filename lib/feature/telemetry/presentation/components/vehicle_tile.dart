@@ -1,3 +1,4 @@
+import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/components/vehicle_status_chip.dart';
@@ -13,20 +14,14 @@ class VehicleTile extends StatelessWidget {
   });
 
   final VehicleEntity vehicle;
-  final String status; // from fleet-wide stream — always correct
-  final VehicleTelemetryEntity? detail; // from visible-only stream — may be null
+  final FleetStatus status;
+  final VehicleTelemetryEntity? detail;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final hasAlert = detail?.hasAlert ?? false;
     final isCritical = detail?.isCritical ?? false;
-    final accentColor = switch (status) {
-      'MOVING' => const Color(0xFF2E7D32),
-      'STOPPED' => const Color(0xFF9E9E9E),
-      _ => const Color(0xFFC62828),
-    };
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
@@ -39,7 +34,7 @@ class VehicleTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(width: 4, color: accentColor),
+            Container(width: 4, color: status.foregroundColor),
             Expanded(
               child: InkWell(
                 onTap: onTap,
@@ -53,7 +48,10 @@ class VehicleTile extends StatelessWidget {
                           Expanded(
                             child: Text(
                               vehicle.registration,
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -65,9 +63,19 @@ class VehicleTile extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 2),
-                      Text(vehicle.model, style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+                      Text(
+                        vehicle.model,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
                       const SizedBox(height: 12),
-                      _SignalGrid(detail: detail, hasAlert: hasAlert, isCritical: isCritical),
+                      _SignalGrid(
+                        detail: detail,
+                        hasAlert: hasAlert,
+                        isCritical: isCritical,
+                      ),
                     ],
                   ),
                 ),
@@ -81,7 +89,11 @@ class VehicleTile extends StatelessWidget {
 }
 
 class _SignalGrid extends StatelessWidget {
-  const _SignalGrid({required this.detail, required this.hasAlert, required this.isCritical});
+  const _SignalGrid({
+    required this.detail,
+    required this.hasAlert,
+    required this.isCritical,
+  });
 
   final VehicleTelemetryEntity? detail;
   final bool hasAlert;
@@ -93,17 +105,34 @@ class _SignalGrid extends StatelessWidget {
       children: [
         Row(
           children: [
-            _SignalTile(label: 'SOC', value: _fmt(detail?.soc, '%'), isAlert: hasAlert, isCritical: isCritical),
-            _SignalTile(label: 'Speed', value: _fmt(detail?.speed, ' km/h', decimals: 0)),
-            _SignalTile(label: 'Range', value: _fmt(detail?.range, ' km', decimals: 0)),
+            _SignalTile(
+              label: 'SOC',
+              value: _fmt(detail?.soc, '%'),
+              isAlert: hasAlert,
+              isCritical: isCritical,
+            ),
+            _SignalTile(
+              label: 'Speed',
+              value: _fmt(detail?.speed, ' km/h', decimals: 0),
+            ),
+            _SignalTile(
+              label: 'Range',
+              value: _fmt(detail?.range, ' km', decimals: 0),
+            ),
           ],
         ),
         const SizedBox(height: 10),
         Row(
           children: [
             _SignalTile(label: 'Temp', value: _fmt(detail?.batteryTemp, '°C')),
-            _SignalTile(label: 'Odo', value: _fmt(detail?.odometer, ' km', decimals: 0)),
-            _SignalTile(label: 'Last ping', value: _formatPing(detail?.lastPingAt)),
+            _SignalTile(
+              label: 'Odo',
+              value: _fmt(detail?.odometer, ' km', decimals: 0),
+            ),
+            _SignalTile(
+              label: 'Last ping',
+              value: _formatPing(detail?.lastPingAt),
+            ),
           ],
         ),
       ],
@@ -123,7 +152,12 @@ class _SignalGrid extends StatelessWidget {
 }
 
 class _SignalTile extends StatelessWidget {
-  const _SignalTile({required this.label, required this.value, this.isAlert = false, this.isCritical = false});
+  const _SignalTile({
+    required this.label,
+    required this.value,
+    this.isAlert = false,
+    this.isCritical = false,
+  });
   final String label;
   final String value;
   final bool isAlert;
@@ -134,15 +168,25 @@ class _SignalTile extends StatelessWidget {
     final valueColor = isCritical
         ? const Color(0xFFC62828)
         : isAlert
-            ? const Color(0xFFF57F17)
-            : const Color(0xFF212121);
+        ? const Color(0xFFF57F17)
+        : const Color(0xFF212121);
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
+          Text(
+            label,
+            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+          ),
           const SizedBox(height: 2),
-          Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: valueColor)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: valueColor,
+            ),
+          ),
         ],
       ),
     );
@@ -155,18 +199,29 @@ class _AlertBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isCritical ? const Color(0xFFC62828) : const Color(0xFFF57F17);
+    final color = isCritical
+        ? const Color(0xFFC62828)
+        : const Color(0xFFF57F17);
     final bg = isCritical ? const Color(0xFFFFEBEE) : const Color(0xFFFFF8E1);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(6),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.warning_amber_rounded, size: 12, color: color),
           const SizedBox(width: 3),
-          Text(isCritical ? 'Critical' : 'Warning',
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color)),
+          Text(
+            isCritical ? 'Critical' : 'Warning',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
         ],
       ),
     );

@@ -1,5 +1,5 @@
+import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
-import 'package:bytebeam_assessment/feature/telemetry/presentation/components/fleet_body.dart';
 import 'package:flutter/material.dart';
 
 class FleetFilterBar extends StatelessWidget {
@@ -7,24 +7,24 @@ class FleetFilterBar extends StatelessWidget {
     super.key,
     required this.vehicles,
     required this.statusByVehicle,
-    required this.activeFilter,
-    required this.onFilterChanged,
+    required this.activeStatus,
+    required this.onStatusChanged,
   });
 
   final List<VehicleEntity> vehicles;
-  final Map<int, String> statusByVehicle;
-  final FleetFilter activeFilter;
-  final ValueChanged<FleetFilter> onFilterChanged;
+  final Map<int, FleetStatus> statusByVehicle;
+  final FleetStatus activeStatus;
+  final ValueChanged<FleetStatus> onStatusChanged;
 
   @override
   Widget build(BuildContext context) {
-    final statuses = vehicles.map((v) => statusByVehicle[v.id] ?? 'OFFLINE').toList();
-
-    final counts = {
-      FleetFilter.all: vehicles.length,
-      FleetFilter.moving: statuses.where((s) => s == 'MOVING').length,
-      FleetFilter.stopped: statuses.where((s) => s == 'STOPPED').length,
-      FleetFilter.offline: statuses.where((s) => s == 'OFFLINE').length,
+    final counts = <FleetStatus, int>{
+      for (final status in FleetStatus.values)
+        status: status == FleetStatus.all
+            ? vehicles.length
+            : vehicles
+                  .where((vehicle) => statusByVehicle[vehicle.id] == status)
+                  .length,
     };
 
     return Container(
@@ -33,22 +33,23 @@ class FleetFilterBar extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: FleetFilter.values.map((filter) {
-            final isActive = filter == activeFilter;
-            final label = filter.name[0].toUpperCase() + filter.name.substring(1);
+          children: FleetStatus.values.map((status) {
+            final isActive = status == activeStatus;
 
             return Padding(
               padding: const EdgeInsets.only(right: 8),
               child: FilterChip(
                 selected: isActive,
-                label: Text('$label (${counts[filter]})'),
-                onSelected: (_) => onFilterChanged(filter),
+                label: Text('${status.label} (${counts[status]})'),
+                onSelected: (_) => onStatusChanged(status),
                 selectedColor: const Color(0xFF1A73E8).withOpacity(0.12),
                 checkmarkColor: const Color(0xFF1A73E8),
                 labelStyle: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: isActive ? const Color(0xFF1A73E8) : Colors.grey.shade700,
+                  color: isActive
+                      ? const Color(0xFF1A73E8)
+                      : Colors.grey.shade700,
                 ),
               ),
             );

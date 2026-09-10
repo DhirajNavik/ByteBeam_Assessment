@@ -1,10 +1,10 @@
 import 'package:bytebeam_assessment/core/database/tables/telemetry.table.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
-import 'package:bytebeam_assessment/core/utils/vehicle_status_classifier.dart';
+import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 
 class FleetStatusModel {
   final int vehicleId;
-  final String status;
+  final FleetStatus status;
 
   const FleetStatusModel({required this.vehicleId, required this.status});
 

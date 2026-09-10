@@ -4,6 +4,7 @@ import 'package:bytebeam_assessment/core/database/tables/telemetry.table.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
 import 'package:bytebeam_assessment/core/network/database_requester.dart';
 import 'package:bytebeam_assessment/core/extension/duck_db_parser_extension.dart';
+import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/datasource/telemetry_datasource.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/models/fleet_status_model.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/models/vehicle_model.dart';
@@ -52,7 +53,7 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
   }
 
   @override
-  Stream<Map<int, String>> watchFleetStatus() async* {
+  Stream<Map<int, FleetStatus>> watchFleetStatus() async* {
     while (true) {
       final response = await _database.query(
         TelemetryQuery.fetchLatestStatusAll,

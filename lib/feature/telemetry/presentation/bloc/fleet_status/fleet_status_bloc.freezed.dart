@@ -359,7 +359,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Map<int, String> statusByVehicleId)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Map<int, FleetStatus> statusByVehicleId)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
@@ -383,7 +383,7 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Map<int, String> statusByVehicleId)  loaded,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Map<int, FleetStatus> statusByVehicleId)  loaded,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
@@ -406,7 +406,7 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Map<int, String> statusByVehicleId)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Map<int, FleetStatus> statusByVehicleId)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
@@ -488,11 +488,11 @@ String toString() {
 
 
 class _Loaded implements FleetStatusState {
-  const _Loaded( Map<int, String> statusByVehicleId): _statusByVehicleId = statusByVehicleId;
+  const _Loaded( Map<int, FleetStatus> statusByVehicleId): _statusByVehicleId = statusByVehicleId;
   
 
- final  Map<int, String> _statusByVehicleId;
- Map<int, String> get statusByVehicleId {
+ final  Map<int, FleetStatus> _statusByVehicleId;
+ Map<int, FleetStatus> get statusByVehicleId {
   if (_statusByVehicleId is EqualUnmodifiableMapView) return _statusByVehicleId;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_statusByVehicleId);
@@ -529,7 +529,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $FleetStatusStateCopyWith
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- Map<int, String> statusByVehicleId
+ Map<int, FleetStatus> statusByVehicleId
 });
 
 
@@ -549,7 +549,7 @@ class __$LoadedCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? statusByVehicleId = null,}) {
   return _then(_Loaded(
 null == statusByVehicleId ? _self._statusByVehicleId : statusByVehicleId // ignore: cast_nullable_to_non_nullable
-as Map<int, String>,
+as Map<int, FleetStatus>,
   ));
 }
 

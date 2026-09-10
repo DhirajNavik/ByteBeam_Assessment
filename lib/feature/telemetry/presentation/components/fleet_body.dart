@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/fleet_status/fleet_status_bloc.dart';
@@ -14,8 +15,6 @@ import 'fleet_filter_bar.dart';
 import 'fleet_summary_bar.dart';
 import 'vehicle_tile.dart';
 
-enum FleetFilter { all, moving, stopped, offline }
-
 class FleetBody extends StatefulWidget {
   const FleetBody({super.key});
 
@@ -24,7 +23,7 @@ class FleetBody extends StatefulWidget {
 }
 
 class _FleetBodyState extends State<FleetBody> {
-  FleetFilter _activeFilter = FleetFilter.all;
+  FleetStatus _activeStatus = FleetStatus.all;
   final Set<int> _visibleIds = {};
   Timer? _debounce;
 
@@ -60,10 +59,11 @@ class _FleetBodyState extends State<FleetBody> {
           error: (message) => Center(child: Text(message)),
           loaded: (vehicles) => BlocBuilder<FleetStatusBloc, FleetStatusState>(
             builder: (context, fleetStatusState) {
-              final statusByVehicle = fleetStatusState.maybeWhen(
-                loaded: (statusByVehicleId) => statusByVehicleId,
-                orElse: () => const <int, String>{},
-              );
+              final Map<int, FleetStatus> statusByVehicle = fleetStatusState
+                  .maybeWhen(
+                    loaded: (statusByVehicleId) => statusByVehicleId,
+                    orElse: () => {},
+                  );
               return BlocBuilder<TelemetryBloc, TelemetryState>(
                 builder: (context, telemetryState) {
                   final detailByVehicle = telemetryState.maybeWhen(
@@ -86,7 +86,7 @@ class _FleetBodyState extends State<FleetBody> {
 
   Widget _buildLoaded(
     List<VehicleEntity> vehicles,
-    Map<int, String> statusByVehicle,
+    Map<int, FleetStatus> statusByVehicle,
     Map<int, VehicleTelemetryEntity> detailByVehicle,
   ) {
     final filtered = _filter(vehicles, statusByVehicle);
@@ -97,16 +97,20 @@ class _FleetBodyState extends State<FleetBody> {
         FleetFilterBar(
           vehicles: vehicles,
           statusByVehicle: statusByVehicle,
-          activeFilter: _activeFilter,
-          onFilterChanged: (f) => setState(() => _activeFilter = f),
+          activeStatus: _activeStatus,
+          onStatusChanged: (status) {
+            setState(() {
+              _activeStatus = status;
+            });
+          },
         ),
         Expanded(
           child: filtered.isEmpty
-              ? FleetEmptyState(filterLabel: _activeFilter.name)
+              ? FleetEmptyState(filterLabel: _activeStatus.label)
               : ListView.separated(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   itemCount: filtered.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 4),
+                  separatorBuilder: (_, _) => const SizedBox(height: 4),
                   itemBuilder: (context, index) {
                     final vehicle = filtered[index];
                     return VisibilityDetector(
@@ -115,10 +119,8 @@ class _FleetBodyState extends State<FleetBody> {
                           _onVisibilityChanged(vehicle.id, info),
                       child: VehicleTile(
                         vehicle: vehicle,
-                        status: statusByVehicle[vehicle.id] ?? 'OFFLINE',
-                        // Detail is only populated for vehicles that have
-                        // been visible long enough to be watched — shows
-                        // "—" until then, by design.
+                        status:
+                            statusByVehicle[vehicle.id] ?? FleetStatus.offline,
                         detail: detailByVehicle[vehicle.id],
                         onTap: () {},
                       ),
@@ -132,18 +134,12 @@ class _FleetBodyState extends State<FleetBody> {
 
   List<VehicleEntity> _filter(
     List<VehicleEntity> vehicles,
-    Map<int, String> statusByVehicle,
+    Map<int, FleetStatus> statusByVehicle,
   ) {
-    if (_activeFilter == FleetFilter.all) return vehicles;
-    final wanted = fleetFilterStatus(_activeFilter);
-    return vehicles
-        .where((v) => (statusByVehicle[v.id] ?? 'OFFLINE') == wanted)
-        .toList();
+    return vehicles.where((vehicle) {
+      final status = statusByVehicle[vehicle.id] ?? FleetStatus.offline;
+
+      return _activeStatus.matches(status);
+    }).toList();
   }
 }
-
-String fleetFilterStatus(FleetFilter filter) => switch (filter) {
-  FleetFilter.moving => 'MOVING',
-  FleetFilter.stopped => 'STOPPED',
-  FleetFilter.offline || FleetFilter.all => 'OFFLINE',
-};

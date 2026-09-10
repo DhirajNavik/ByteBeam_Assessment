@@ -1,6 +1,6 @@
 import 'package:bytebeam_assessment/core/database/tables/telemetry.table.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
-import 'package:bytebeam_assessment/core/utils/vehicle_status_classifier.dart';
+import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'vehicle_telemetry_model.freezed.dart';
@@ -17,7 +17,7 @@ abstract class VehicleTelemetryModel with _$VehicleTelemetryModel {
     required double? range,
     required double? odometer,
     required DateTime? lastPingAt,
-    required String status,
+    required FleetStatus status,
   }) = _VehicleTelemetryModel;
 
   factory VehicleTelemetryModel.fromLocalJson(Map<String, dynamic> json) {
