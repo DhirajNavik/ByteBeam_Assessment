@@ -25,8 +25,12 @@ import '../../feature/telemetry/domain/repositories/telemetry_repository.dart'
     as _i757;
 import '../../feature/telemetry/domain/usecases/fetch_vehicles_usecase.dart'
     as _i538;
+import '../../feature/telemetry/domain/usecases/watch_fleet_status_usecase.dart'
+    as _i407;
 import '../../feature/telemetry/domain/usecases/watch_vehicle_usecase%20copy.dart'
     as _i1066;
+import '../../feature/telemetry/presentation/bloc/fleet_status/fleet_status_bloc.dart'
+    as _i731;
 import '../../feature/telemetry/presentation/bloc/telemetry/telemetry_bloc.dart'
     as _i903;
 import '../../feature/telemetry/presentation/bloc/vehicle/vehicle_bloc.dart'
@@ -64,8 +68,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i538.FetchVehiclesUsecase>(
       () => _i538.FetchVehiclesUsecase(gh<_i757.TelemetryRepository>()),
     );
+    gh.lazySingleton<_i407.WatchFleetStatusUsecase>(
+      () => _i407.WatchFleetStatusUsecase(gh<_i757.TelemetryRepository>()),
+    );
     gh.lazySingleton<_i1066.WatchVehicleUsecase>(
       () => _i1066.WatchVehicleUsecase(gh<_i757.TelemetryRepository>()),
+    );
+    gh.factory<_i731.FleetStatusBloc>(
+      () => _i731.FleetStatusBloc(gh<_i407.WatchFleetStatusUsecase>()),
     );
     gh.factory<_i1062.VehicleBloc>(
       () => _i1062.VehicleBloc(gh<_i538.FetchVehiclesUsecase>()),

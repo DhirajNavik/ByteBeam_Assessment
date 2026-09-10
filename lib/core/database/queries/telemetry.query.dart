@@ -5,13 +5,9 @@ import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
 abstract final class TelemetryQuery {
   TelemetryQuery._();
 
-  static String fetchNewTelemetry(List<int> vehicleIds) {
+  static String fetchLatestTelemetry(List<int> vehicleIds) {
     if (vehicleIds.isEmpty) {
-      return '''
-        SELECT *
-        FROM ${DBPath.telemetryTable}
-        WHERE 1 = 0
-      ''';
+      return 'SELECT * FROM ${DBPath.telemetryTable} WHERE 1 = 0';
     }
     final ids = vehicleIds.join(',');
 
@@ -46,4 +42,30 @@ abstract final class TelemetryQuery {
         ORDER BY t.${VehicleTable.id}
     ''';
   }
+
+  static String get nextSequenceId =>
+      '''
+        SELECT COALESCE(MAX(${TelemetryTable.sequenceId}), 0)
+        FROM ${DBPath.telemetryTable}
+  ''';
+
+  static String get fetchLatestStatusAll =>
+      '''
+    WITH latest_sequence AS (
+      SELECT COALESCE(MAX(${TelemetryTable.sequenceId}), 0) AS max_sequence
+      FROM ${DBPath.telemetryTable}
+    )
+    SELECT
+      t.${VehicleTable.id},
+      t.${TelemetryTable.speed},
+      t.${TelemetryTable.ignition},
+      t.${TelemetryTable.lastSeen}
+    FROM ${DBPath.telemetryTable} t
+    CROSS JOIN latest_sequence ls
+    WHERE t.${TelemetryTable.sequenceId} <= ls.max_sequence
+    QUALIFY ROW_NUMBER() OVER (
+      PARTITION BY t.${VehicleTable.id}
+      ORDER BY t.${TelemetryTable.sequenceId} DESC
+    ) = 1
+  ''';
 }

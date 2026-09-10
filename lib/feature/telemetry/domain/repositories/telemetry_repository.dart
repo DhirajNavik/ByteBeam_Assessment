@@ -8,4 +8,5 @@ abstract interface class TelemetryRepository {
   Stream<Either<Failure, List<VehicleTelemetryEntity>>> watchVehicleTelemetry(
     List<int> ids,
   );
+  Stream<Either<Failure, Map<int, String>>> watchFleetStatus();
 }

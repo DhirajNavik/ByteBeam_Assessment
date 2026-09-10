@@ -39,4 +39,17 @@ class TelemetryRepositoryImpl implements TelemetryRepository {
       yield Left(LocalFailue(error.toString()));
     }
   }
+
+  @override
+  Stream<Either<Failure, Map<int, String>>> watchFleetStatus() async* {
+    try {
+      await for (final statusMap in _dataSource.watchFleetStatus()) {
+        yield Right(statusMap);
+      }
+    } on DatabaseException catch (error) {
+      yield Left(LocalFailue(error.toString()));
+    } catch (error) {
+      yield Left(LocalFailue(error.toString()));
+    }
+  }
 }

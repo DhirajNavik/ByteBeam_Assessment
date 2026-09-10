@@ -1,5 +1,6 @@
 import 'package:bytebeam_assessment/core/database/tables/telemetry.table.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
+import 'package:bytebeam_assessment/core/utils/vehicle_status_classifier.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'vehicle_telemetry_model.freezed.dart';
@@ -20,15 +21,23 @@ abstract class VehicleTelemetryModel with _$VehicleTelemetryModel {
   }) = _VehicleTelemetryModel;
 
   factory VehicleTelemetryModel.fromLocalJson(Map<String, dynamic> json) {
+    final speed = (json[TelemetryTable.speed] as num?)?.toDouble();
+    final lastSeen = json[TelemetryTable.lastSeen] as DateTime?;
+    final ignition = (json[TelemetryTable.ignition] as num?)?.toInt();
+
     return VehicleTelemetryModel(
       vehicleId: json[VehicleTable.id] as int,
-      soc: json[TelemetryTable.soc],
-      speed: json[TelemetryTable.speed],
-      batteryTemp: json[TelemetryTable.batteryTemp],
-      range: json[TelemetryTable.range],
-      odometer: json[TelemetryTable.odometer],
-      lastPingAt: json[TelemetryTable.lastSeen],
-      status: "Offline",
+      soc: (json[TelemetryTable.soc] as num?)?.toDouble(),
+      speed: speed,
+      batteryTemp: (json[TelemetryTable.batteryTemp] as num?)?.toDouble(),
+      range: (json[TelemetryTable.range] as num?)?.toDouble(),
+      odometer: (json[TelemetryTable.odometer] as num?)?.toDouble(),
+      lastPingAt: lastSeen,
+      status: deriveVehicleStatus(
+        ignition: ignition,
+        speed: speed,
+        lastSeen: lastSeen,
+      ),
     );
   }
 
@@ -41,7 +50,7 @@ abstract class VehicleTelemetryModel with _$VehicleTelemetryModel {
       range: range,
       lastPingAt: lastPingAt,
       status: status,
-      odometer:odometer
+      odometer: odometer,
     );
   }
 }

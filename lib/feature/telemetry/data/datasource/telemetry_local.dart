@@ -5,6 +5,7 @@ import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
 import 'package:bytebeam_assessment/core/network/database_requester.dart';
 import 'package:bytebeam_assessment/core/extension/duck_db_parser_extension.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/datasource/telemetry_datasource.dart';
+import 'package:bytebeam_assessment/feature/telemetry/data/models/fleet_status_model.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/models/vehicle_model.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/models/vehicle_telemetry_model.dart';
 import 'package:injectable/injectable.dart';
@@ -16,7 +17,7 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
   const TelemetryLocalDataSourceImpl(this._database);
   @override
   Future<List<VehicleModel>> fetchVehicles() async {
-    final response = await _database.query(VehicleQuery.fetchAll);
+    final response = await _database.query(VehicleQuery.fetchAllVehicles);
     return response.parseList(VehicleModel.fromLocalJson, [
       VehicleTable.id,
       VehicleTable.registrationNumber,
@@ -30,10 +31,8 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
   ) async* {
     while (true) {
       final response = await _database.query(
-        TelemetryQuery.fetchNewTelemetry(vehicleIds),
+        TelemetryQuery.fetchLatestTelemetry(vehicleIds),
       );
-      print(response);
-
       yield response.parseList(VehicleTelemetryModel.fromLocalJson, [
         VehicleTable.id,
         TelemetryTable.sequenceId,
@@ -47,6 +46,26 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
         TelemetryTable.longitude,
         TelemetryTable.lastSeen,
       ]);
+
+      await Future<void>.delayed(const Duration(seconds: 1));
+    }
+  }
+
+  @override
+  Stream<Map<int, String>> watchFleetStatus() async* {
+    while (true) {
+      final response = await _database.query(
+        TelemetryQuery.fetchLatestStatusAll,
+      );
+
+      final rows = response.parseList(FleetStatusModel.fromLocalJson, [
+        VehicleTable.id,
+        TelemetryTable.speed,
+        TelemetryTable.ignition,
+        TelemetryTable.lastSeen,
+      ]);
+
+      yield {for (final r in rows) r.vehicleId: r.status};
 
       await Future<void>.delayed(const Duration(seconds: 1));
     }

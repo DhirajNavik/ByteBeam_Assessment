@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 
-enum VehicleStatus { moving, idle, stopped, offline }
+enum VehicleStatus { moving, stopped, offline }
 
 extension VehicleStatusExtension on String {
-  VehicleStatus toVehicleStatus() {
-    switch (this) {
-      case 'MOVING':  return VehicleStatus.moving;
-      case 'IDLE':    return VehicleStatus.idle;
-      case 'STOPPED': return VehicleStatus.stopped;
-      default:        return VehicleStatus.offline;
-    }
-  }
+  VehicleStatus toVehicleStatus() => switch (this) {
+    'MOVING' => VehicleStatus.moving,
+    'STOPPED' => VehicleStatus.stopped,
+    _ => VehicleStatus.offline,
+  };
 }
 
 class VehicleStatusChip extends StatelessWidget {
@@ -28,32 +25,43 @@ class VehicleStatusChip extends StatelessWidget {
         color: _backgroundColor(vehicleStatus),
         borderRadius: BorderRadius.circular(6),
       ),
-      child: Text(
-        status,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          color: _foregroundColor(vehicleStatus),
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            _icon(vehicleStatus),
+            size: 11,
+            color: _foregroundColor(vehicleStatus),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            status,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: _foregroundColor(vehicleStatus),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Color _backgroundColor(VehicleStatus status) {
-    switch (status) {
-      case VehicleStatus.moving:  return const Color(0xFFE8F5E9);
-      case VehicleStatus.idle:    return const Color(0xFFFFF8E1);
-      case VehicleStatus.stopped: return const Color(0xFFF5F5F5);
-      case VehicleStatus.offline: return const Color(0xFFFFEBEE);
-    }
-  }
+  IconData _icon(VehicleStatus status) => switch (status) {
+    VehicleStatus.moving => Icons.bolt,
+    VehicleStatus.stopped => Icons.pause_circle_outline,
+    VehicleStatus.offline => Icons.wifi_off,
+  };
 
-  Color _foregroundColor(VehicleStatus status) {
-    switch (status) {
-      case VehicleStatus.moving:  return const Color(0xFF2E7D32);
-      case VehicleStatus.idle:    return const Color(0xFFF57F17);
-      case VehicleStatus.stopped: return const Color(0xFF616161);
-      case VehicleStatus.offline: return const Color(0xFFC62828);
-    }
-  }
+  Color _backgroundColor(VehicleStatus status) => switch (status) {
+    VehicleStatus.moving => const Color(0xFFE8F5E9),
+    VehicleStatus.stopped => const Color(0xFFF5F5F5),
+    VehicleStatus.offline => const Color(0xFFFFEBEE),
+  };
+
+  Color _foregroundColor(VehicleStatus status) => switch (status) {
+    VehicleStatus.moving => const Color(0xFF2E7D32),
+    VehicleStatus.stopped => const Color(0xFF616161),
+    VehicleStatus.offline => const Color(0xFFC62828),
+  };
 }

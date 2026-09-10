@@ -1,3 +1,4 @@
+import 'package:bytebeam_assessment/core/models/vehicle_model.dart';
 import 'package:dart_duckdb/dart_duckdb.dart';
 
 import '../db_path.dart';
@@ -20,12 +21,12 @@ abstract final class VehicleSeeder {
     'UP',
   ];
 
-  static const List<String> models = [
-    'Tata Ultra EV',
-    'Ashok Leyland AVTR EV',
-    'Eicher Pro EV',
-    'Switch EiV',
-    'Volvo FM Electric',
+  static const List<VehicleDetails> models = [
+    VehicleDetails(name: 'Tata Ultra EV', range: 300.0, maxSpeed: 80.0),
+    VehicleDetails(name: 'Ashok Leyland AVTR EV', range: 350.0, maxSpeed: 90.0),
+    VehicleDetails(name: 'Eicher Pro EV', range: 400.0, maxSpeed: 100.0),
+    VehicleDetails(name: 'Switch EiV', range: 450.0, maxSpeed: 110.0),
+    VehicleDetails(name: 'Volvo FM Electric', range: 500.0, maxSpeed: 120.0),
   ];
 
   static Future<void> seed(Connection connection) async {
@@ -50,7 +51,9 @@ abstract final class VehicleSeeder {
         final model = models[(i - 1) % models.length];
         appender.append(i);
         appender.append(registrationNumber);
-        appender.append(model);
+        appender.append(model.name);
+        appender.append(model.range);
+        appender.append(model.maxSpeed);
 
         appender.endRow();
       }
