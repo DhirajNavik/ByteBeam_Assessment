@@ -1,3 +1,4 @@
+import 'package:bytebeam_assessment/core/utils/app_palettes.dart';
 import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,11 @@ class FleetFilterBar extends StatelessWidget {
         status: status == FleetStatus.all
             ? vehicles.length
             : vehicles
-                  .where((vehicle) => statusByVehicle[vehicle.id] == status)
+                  .where(
+                    (vehicle) =>
+                        (statusByVehicle[vehicle.id] ?? FleetStatus.offline) ==
+                        status,
+                  )
                   .length,
     };
 
@@ -42,7 +47,7 @@ class FleetFilterBar extends StatelessWidget {
                 selected: isActive,
                 label: Text('${status.label} (${counts[status]})'),
                 onSelected: (_) => onStatusChanged(status),
-                selectedColor: const Color(0xFF1A73E8).withOpacity(0.12),
+                selectedColor: const Color(0xFF1A73E8).withOpacityExt(0.12),
                 checkmarkColor: const Color(0xFF1A73E8),
                 labelStyle: TextStyle(
                   fontSize: 13,

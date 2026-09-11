@@ -68,4 +68,15 @@ abstract final class TelemetryQuery {
       ORDER BY t.${TelemetryTable.sequenceId} DESC
     ) = 1
   ''';
+
+  static String fetchSocHistory(int vehicleId) =>
+      '''
+  SELECT
+    ${TelemetryTable.sequenceId},
+    ${TelemetryTable.soc},
+    ${TelemetryTable.lastSeen}
+  FROM ${DBPath.telemetryTable}
+  WHERE ${VehicleTable.id} = $vehicleId
+  ORDER BY ${TelemetryTable.sequenceId} ASC
+''';
 }

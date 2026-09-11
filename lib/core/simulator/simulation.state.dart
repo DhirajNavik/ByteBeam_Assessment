@@ -37,6 +37,7 @@ final class SimulationState {
     this.drivingTicks = 0,
     this.stoppedTicks = 0,
     this.generated = false,
+    this.charging = false,
   });
 
   // ── Static profile ─────────────────────────────────────────────────────────
@@ -128,7 +129,7 @@ final class SimulationState {
 
   /// Set to true by [TelemetrySnapshot] when this tick produced a DB row.
   bool generated;
-
+  bool charging;
   // ── copyWith ────────────────────────────────────────────────────────────────
 
   /// Returns a full copy of this state.
@@ -136,40 +137,42 @@ final class SimulationState {
   /// [TelemetrySnapshot.fromLastState] uses this to work on a throw-away
   /// copy so the original is not mutated until the tick is committed.
   SimulationState copyWith() => SimulationState(
-        // static profile
-        vehicleId: vehicleId,
-        maxSpeed: maxSpeed,
-        totalRange: totalRange,
-        batteryCapacityKwh: batteryCapacityKwh,
-        minOperatingTemp: minOperatingTemp,
-        maxOperatingTemp: maxOperatingTemp,
-        tickIntervalSeconds: tickIntervalSeconds,
-        startLatitude: startLatitude,
-        startLongitude: startLongitude,
-        destinationLatitude: destinationLatitude,
-        destinationLongitude: destinationLongitude,
-        driveCycleLengthFactor: driveCycleLengthFactor,
-        stopCycleLengthFactor: stopCycleLengthFactor,
-        // live telemetry
-        soc: soc,
-        speed: speed,
-        batteryTemperature: batteryTemperature,
-        rangeKm: rangeKm,
-        odometer: odometer,
-        ignition: ignition,
-        latitude: latitude,
-        longitude: longitude,
-        lastSeen: lastSeen,
-        // sim internals
-        driving: driving,
-        targetSpeed: targetSpeed,
-        drivingTicks: drivingTicks,
-        stoppedTicks: stoppedTicks,
-        generated: generated,
-      );
+    // static profile
+    vehicleId: vehicleId,
+    maxSpeed: maxSpeed,
+    totalRange: totalRange,
+    batteryCapacityKwh: batteryCapacityKwh,
+    minOperatingTemp: minOperatingTemp,
+    maxOperatingTemp: maxOperatingTemp,
+    tickIntervalSeconds: tickIntervalSeconds,
+    startLatitude: startLatitude,
+    startLongitude: startLongitude,
+    destinationLatitude: destinationLatitude,
+    destinationLongitude: destinationLongitude,
+    driveCycleLengthFactor: driveCycleLengthFactor,
+    stopCycleLengthFactor: stopCycleLengthFactor,
+    // live telemetry
+    soc: soc,
+    speed: speed,
+    batteryTemperature: batteryTemperature,
+    rangeKm: rangeKm,
+    odometer: odometer,
+    ignition: ignition,
+    latitude: latitude,
+    longitude: longitude,
+    lastSeen: lastSeen,
+    // sim internals
+    driving: driving,
+    targetSpeed: targetSpeed,
+    drivingTicks: drivingTicks,
+    stoppedTicks: stoppedTicks,
+    generated: generated,
+    charging: charging,
+  );
 
   @override
-  String toString() => 'SimulationState('
+  String toString() =>
+      'SimulationState('
       'vehicleId: $vehicleId, '
       'ignition: $ignition, '
       'soc: ${soc.toStringAsFixed(2)}, '
@@ -178,6 +181,7 @@ final class SimulationState {
       'range: ${rangeKm.toStringAsFixed(1)}, '
       'odometer: ${odometer.toStringAsFixed(2)}, '
       'driving: $driving, '
+      'charging: $charging, '
       'generated: $generated'
       ')';
 }

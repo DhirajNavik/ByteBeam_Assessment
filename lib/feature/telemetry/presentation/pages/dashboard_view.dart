@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:bytebeam_assessment/config/injectors/injectable.dart';
+import 'package:bytebeam_assessment/config/routes/app_route_path.dart';
+import 'package:bytebeam_assessment/core/components/common_snackbar.dart';
 import 'package:bytebeam_assessment/core/database/duck_db_seeder.dart';
+import 'package:bytebeam_assessment/feature/alerts/presentation/bloc/alerts/alerts_bloc.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/fleet_status/fleet_status_bloc.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/telemetry/telemetry_bloc.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/vehicle/vehicle_bloc.dart';
@@ -9,6 +12,7 @@ import 'package:bytebeam_assessment/feature/telemetry/presentation/components/fl
 import 'package:dart_duckdb/dart_duckdb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class FleetHomePage extends StatefulWidget {
   const FleetHomePage({super.key});
@@ -33,6 +37,7 @@ class _FleetHomePageState extends State<FleetHomePage> {
     _vehicleBloc = serviceLocator<VehicleBloc>();
     _telemetryBloc = serviceLocator<TelemetryBloc>();
     _fleetStatusBloc = serviceLocator<FleetStatusBloc>();
+
     _bootstrap();
   }
 
@@ -53,6 +58,7 @@ class _FleetHomePageState extends State<FleetHomePage> {
     setState(() => _phase = _Phase.running);
     _vehicleBloc.add(const VehicleEvent.fetchVehicles());
     _fleetStatusBloc.add(const FleetStatusEvent.watch());
+    context.read<AlertsBloc>().add(const AlertsEvent.watch());
   }
 
   @override
@@ -71,21 +77,46 @@ class _FleetHomePageState extends State<FleetHomePage> {
         BlocProvider.value(value: _telemetryBloc),
         BlocProvider.value(value: _fleetStatusBloc),
       ],
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
-        appBar: AppBar(
-          title: const Text(
-            'Fleet Console',
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.white,
-        ),
-        body: switch (_phase) {
-          _Phase.seeding => const _SeedingView(),
-          _Phase.error => _ErrorView(message: _errorMessage),
-          _Phase.running => const FleetBody(),
+      child: BlocListener<AlertsBloc, AlertsState>(
+        listenWhen: (p, c) {
+          final prevId = p.whenOrNull(loaded: (_, id) => id);
+          final currId = c.whenOrNull(loaded: (_, id) => id);
+          return currId != null && currId != prevId;
         },
+        listener: (context, state) {
+          CommonSnackbar.showUndoToast(
+            context,
+            message: 'Alert dismissed',
+            onUndo: () {
+              context.read<AlertsBloc>().add(
+                AlertsEvent.undoDismiss(
+                  state.whenOrNull(loaded: (_, id) => id)!,
+                ),
+              );
+            },
+          );
+        },
+
+        child: Scaffold(
+          backgroundColor: const Color(0xFFF8F9FA),
+          appBar: AppBar(
+            title: const Text(
+              'Fleet Console',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            actions: [
+              IconButton(
+                onPressed: () => context.push(AppRoutePath.alertsPage.path),
+                icon: Icon(Icons.notifications),
+              ),
+            ],
+          ),
+          body: switch (_phase) {
+            _Phase.seeding => const _SeedingView(),
+            _Phase.error => _ErrorView(message: _errorMessage),
+            _Phase.running => const FleetBody(),
+          },
+        ),
       ),
     );
   }

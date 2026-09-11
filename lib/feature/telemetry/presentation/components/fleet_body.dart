@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:bytebeam_assessment/config/routes/app_route_path.dart';
 import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
+import 'package:bytebeam_assessment/feature/alerts/presentation/components/fleet_alerts_summary.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/fleet_status/fleet_status_bloc.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/telemetry/telemetry_bloc.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/vehicle/vehicle_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -93,6 +96,7 @@ class _FleetBodyState extends State<FleetBody> {
 
     return Column(
       children: [
+        const FleetAlertsSummary(),
         FleetSummaryBar(vehicles: vehicles, statusByVehicle: statusByVehicle),
         FleetFilterBar(
           vehicles: vehicles,
@@ -122,7 +126,12 @@ class _FleetBodyState extends State<FleetBody> {
                         status:
                             statusByVehicle[vehicle.id] ?? FleetStatus.offline,
                         detail: detailByVehicle[vehicle.id],
-                        onTap: () {},
+                        onTap: () {
+                          context.push(
+                            AppRoutePath.detailsPage.path,
+                            extra: vehicle,
+                          );
+                        },
                       ),
                     );
                   },

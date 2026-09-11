@@ -15,19 +15,21 @@ enum FleetStatus {
     backgroundColor: Color(0xFFE8F5E9),
     foregroundColor: Color(0xFF2E7D32),
   ),
-  stopped(
-    value: 'STOPPED',
-    label: 'Stopped',
-    icon: Icons.pause_circle_outline,
-    backgroundColor: Color(0xFFF5F5F5),
-    foregroundColor: Color(0xFF616161),
-  ),
+
   idle(
     value: 'IDLE',
     label: 'Idle',
     icon: Icons.pause,
     backgroundColor: Color(0xFFFFF8E1),
     foregroundColor: Color(0xFFF57F17),
+  ),
+
+  stopped(
+    value: 'STOPPED',
+    label: 'Stopped',
+    icon: Icons.pause_circle_outline,
+    backgroundColor: Color(0xFFF5F5F5),
+    foregroundColor: Color(0xFF616161),
   ),
   offline(
     value: 'OFFLINE',
@@ -51,8 +53,8 @@ enum FleetStatus {
   final Color backgroundColor;
   final Color foregroundColor;
 
-  bool matches(FleetStatus  status) {
-     return this == FleetStatus.all || this == status;
+  bool matches(FleetStatus status) {
+    return this == FleetStatus.all || this == status;
   }
 
   static FleetStatus fromValue(String value) {

@@ -25,6 +25,7 @@ final class TelemetrySnapshot {
     required this.targetSpeed, // NEW
     required this.drivingTicks, // NEW
     required this.stoppedTicks, // NEW
+    required this.charging, // NEW
   });
 
   final int vehicleId;
@@ -41,6 +42,7 @@ final class TelemetrySnapshot {
   final double targetSpeed;
   final int drivingTicks;
   final int stoppedTicks;
+  final bool charging;
 
   /// Whether this tick produced a recordable change.
   /// The seeder skips rows where [generated] is false.
@@ -65,6 +67,24 @@ final class TelemetrySnapshot {
 
     final cfg = SimulationConfig(next);
 
+    if (next.charging) {
+      if (next.soc >= cfg.chargeStopSoc) next.charging = false;
+    } else if (next.soc <= cfg.chargeStartSoc) {
+      next.charging = true;
+    }
+
+    if (next.charging) {
+      next
+        ..ignition = 1
+        ..driving = false
+        ..targetSpeed = 0
+        ..speed = 0;
+      _updateCharging(next, cfg);
+      _updateTemperature(next, cfg); // idle cooling toward normal
+      next.lastSeen = DateTime.now();
+      next.generated = true;
+      return TelemetrySnapshot._fromState(next);
+    }
     // ── Hard stops ────────────────────────────────────────────────────────
     if (next.ignition == 0 ||
         next.soc <= 0 ||
@@ -123,6 +143,7 @@ final class TelemetrySnapshot {
     targetSpeed: s.targetSpeed, // NEW
     drivingTicks: s.drivingTicks, // NEW
     stoppedTicks: s.stoppedTicks,
+    charging: s.charging,
   );
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -152,7 +173,8 @@ final class TelemetrySnapshot {
         ..driving = snap.driving
         ..targetSpeed = snap.targetSpeed
         ..drivingTicks = snap.drivingTicks
-        ..stoppedTicks = snap.stoppedTicks;
+        ..stoppedTicks = snap.stoppedTicks
+        ..charging = snap.charging;
       // Commit generated tick back into the live state.
       if (snap.generated) {
         state
@@ -173,6 +195,12 @@ final class TelemetrySnapshot {
     return snapshots;
   }
 
+  static void _updateCharging(SimulationState s, SimulationConfig cfg) {
+    s.soc = (s.soc + cfg.chargeRatePerTick).clamp(0, 100);
+    // Range tracks the pack. The driving branch is skipped while
+    // charging, so recompute here rather than leaving it stale.
+    s.rangeKm = (s.soc * cfg.baseKmPerSoc).clamp(0, s.totalRange);
+  }
   // ─────────────────────────────────────────────────────────────────────────
   // Simulation steps — pure functions of (SimulationState, SimulationConfig)
   // ─────────────────────────────────────────────────────────────────────────
@@ -276,17 +304,20 @@ final class TelemetrySnapshot {
     double drain =
         cfg.baseSocConsumption + (s.speed / s.maxSpeed) * cfg.speedSocFactor;
     if (s.speed < s.targetSpeed) drain += cfg.accelerationSocPenalty;
-    if (s.batteryTemperature >= cfg.warningTemperature)
+    if (s.batteryTemperature >= cfg.warningTemperature) {
       drain += cfg.warningTempSocPenalty;
-    if (s.batteryTemperature >= cfg.highTemperature)
+    }
+    if (s.batteryTemperature >= cfg.highTemperature) {
       drain += cfg.highTempSocPenalty;
+    }
 
     s.soc = (s.soc - drain).clamp(0, 100);
   }
 
   static void _updateTemperature(SimulationState s, SimulationConfig cfg) {
-    if (s.ignition == 0) return;
-
+    // Idle cooling/warming happens regardless of ignition — a parked
+    // vehicle's pack still sheds heat, which is what lets an
+    // over-temperature shutdown recover.
     if (s.speed <= 0.1) {
       if (s.batteryTemperature > cfg.normalTemperature) {
         s.batteryTemperature -= cfg.idleCoolingRate;
@@ -299,6 +330,8 @@ final class TelemetrySnapshot {
       }
       return;
     }
+
+    if (s.ignition == 0) return;
 
     double heat =
         cfg.baseHeatRate + (s.speed / s.maxSpeed) * cfg.speedHeatFactor;

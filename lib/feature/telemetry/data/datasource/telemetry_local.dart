@@ -7,6 +7,7 @@ import 'package:bytebeam_assessment/core/extension/duck_db_parser_extension.dart
 import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/datasource/telemetry_datasource.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/models/fleet_status_model.dart';
+import 'package:bytebeam_assessment/feature/telemetry/data/models/soc_history_model.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/models/vehicle_model.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/models/vehicle_telemetry_model.dart';
 import 'package:injectable/injectable.dart';
@@ -68,6 +69,21 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
 
       yield {for (final r in rows) r.vehicleId: r.status};
 
+      await Future<void>.delayed(const Duration(seconds: 1));
+    }
+  }
+
+  @override
+  Stream<List<SOCHistoryModel>> watchSocHistory(int vehicleId) async* {
+    while (true) {
+      final response = await _database.query(
+        TelemetryQuery.fetchSocHistory(vehicleId),
+      );
+      yield response.parseList(SOCHistoryModel.fromLocalJson, [
+        TelemetryTable.sequenceId,
+        TelemetryTable.soc,
+        TelemetryTable.lastSeen,
+      ]);
       await Future<void>.delayed(const Duration(seconds: 1));
     }
   }

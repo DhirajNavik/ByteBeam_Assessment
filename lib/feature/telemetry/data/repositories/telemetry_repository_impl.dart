@@ -2,6 +2,7 @@ import 'package:bytebeam_assessment/core/network/exception.dart';
 import 'package:bytebeam_assessment/core/usecase/failures.dart';
 import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/telemetry/data/datasource/telemetry_datasource.dart';
+import 'package:bytebeam_assessment/feature/telemetry/domain/entities/soc_history_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/repositories/telemetry_repository.dart';
@@ -45,6 +46,21 @@ class TelemetryRepositoryImpl implements TelemetryRepository {
     try {
       await for (final statusMap in _dataSource.watchFleetStatus()) {
         yield Right(statusMap);
+      }
+    } on DatabaseException catch (error) {
+      yield Left(LocalFailue(error.toString()));
+    } catch (error) {
+      yield Left(LocalFailue(error.toString()));
+    }
+  }
+
+  @override
+  Stream<Either<Failure, List<SOCHistoryEntity>>> watchSocHistory(
+    int id,
+  ) async* {
+    try {
+      await for (final telemetry in _dataSource.watchSocHistory(id)) {
+        yield Right(telemetry.map((e) => e.toEntity()).toList());
       }
     } on DatabaseException catch (error) {
       yield Left(LocalFailue(error.toString()));

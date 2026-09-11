@@ -55,17 +55,17 @@ final class SimulationConfig {
   // Speed targets — all fractions of state.maxSpeed
   // ─────────────────────────────────────────────
 
-  double get lowSpeedRecoveryMin    => state.maxSpeed * 0.40;
+  double get lowSpeedRecoveryMin => state.maxSpeed * 0.40;
   double get lowSpeedRecoverySpread => state.maxSpeed * 0.20;
-  double get lowSpeedThreshold      => state.maxSpeed * 0.35;
+  double get lowSpeedThreshold => state.maxSpeed * 0.35;
 
-  double get warningTempSpeedMin    => state.maxSpeed * 0.35;
+  double get warningTempSpeedMin => state.maxSpeed * 0.35;
   double get warningTempSpeedSpread => state.maxSpeed * 0.08;
 
-  double get highTempSpeedMin       => state.maxSpeed * 0.25;
-  double get highTempSpeedSpread    => state.maxSpeed * 0.08;
+  double get highTempSpeedMin => state.maxSpeed * 0.25;
+  double get highTempSpeedSpread => state.maxSpeed * 0.08;
 
-  double get preCriticalSpeedMin    => state.maxSpeed * 0.10;
+  double get preCriticalSpeedMin => state.maxSpeed * 0.10;
   double get preCriticalSpeedSpread => state.maxSpeed * 0.08;
 
   /// Random target speed used when a vehicle transitions from stopped → driving.
@@ -89,12 +89,12 @@ final class SimulationConfig {
 
   double get _capacityScale => 30.0 / state.batteryCapacityKwh.clamp(10, 200);
 
-  double get idleSocDrain           => 0.001 * _capacityScale;
-  double get baseSocConsumption     => 0.008 * _capacityScale;
-  double get speedSocFactor         => 0.015 * _capacityScale;
+  double get idleSocDrain => 0.001 * _capacityScale;
+  double get baseSocConsumption => 0.008 * _capacityScale;
+  double get speedSocFactor => 0.015 * _capacityScale;
   double get accelerationSocPenalty => 0.012 * _capacityScale;
-  double get warningTempSocPenalty  => 0.008 * _capacityScale;
-  double get highTempSocPenalty     => 0.012 * _capacityScale;
+  double get warningTempSocPenalty => 0.008 * _capacityScale;
+  double get highTempSocPenalty => 0.012 * _capacityScale;
 
   // ─────────────────────────────────────────────
   // Temperature dynamics
@@ -102,26 +102,26 @@ final class SimulationConfig {
 
   double get _tempBand => state.maxOperatingTemp - state.minOperatingTemp;
 
-  double get idleCoolingRate           => _tempBand * 0.0100;
-  double get idleWarmingRate           => _tempBand * 0.0030;
-  double get temperatureSnapThreshold  => 0.05;
-  double get baseHeatRate              => _tempBand * 0.0014;
-  double get speedHeatFactor           => _tempBand * 0.0028;
-  double get accelerationHeatPenalty   => _tempBand * 0.0033;
-  double get highSpeedHeatThreshold    => state.maxSpeed * 0.75;
-  double get highSpeedHeatPenalty      => _tempBand * 0.0028;
+  double get idleCoolingRate => _tempBand * 0.0100;
+  double get idleWarmingRate => _tempBand * 0.0030;
+  double get temperatureSnapThreshold => 0.05;
+  double get baseHeatRate => _tempBand * 0.0014;
+  double get speedHeatFactor => _tempBand * 0.0028;
+  double get accelerationHeatPenalty => _tempBand * 0.0033;
+  double get highSpeedHeatThreshold => state.maxSpeed * 0.75;
+  double get highSpeedHeatPenalty => _tempBand * 0.0028;
 
   // ─────────────────────────────────────────────
   // Range estimation (km / SOC %)
   // ─────────────────────────────────────────────
 
-  double get baseKmPerSoc                      => state.totalRange / 100.0;
-  double get highSpeedEfficiencyMultiplier     => 0.83;
+  double get baseKmPerSoc => state.totalRange / 100.0;
+  double get highSpeedEfficiencyMultiplier => 0.83;
   double get mediumHighSpeedEfficiencyMultiplier => 0.90;
-  double get mediumSpeedEfficiencyMultiplier   => 0.97;
-  double get warningTempRangePenalty           => baseKmPerSoc * 0.050;
-  double get highTempRangePenalty              => baseKmPerSoc * 0.067;
-  double get minKmPerSoc                       => baseKmPerSoc * 0.50;
+  double get mediumSpeedEfficiencyMultiplier => 0.97;
+  double get warningTempRangePenalty => baseKmPerSoc * 0.050;
+  double get highTempRangePenalty => baseKmPerSoc * 0.067;
+  double get minKmPerSoc => baseKmPerSoc * 0.50;
 
   // ─────────────────────────────────────────────
   // Odometer
@@ -134,5 +134,10 @@ final class SimulationConfig {
   // ─────────────────────────────────────────────
 
   double get locationMovementFactor => (state.speed / state.maxSpeed) * 0.01;
-  double get locationSnapThreshold  => 0.0005;
+  double get locationSnapThreshold => 0.0005;
+
+  //Charging
+  double get chargeStartSoc => 15.0;
+  double get chargeStopSoc => 80.0;
+  double get chargeRatePerTick => 2.0;
 }

@@ -16,6 +16,20 @@ import 'package:injectable/injectable.dart' as _i526;
 
 import '../../core/database/duck_db_module.dart' as _i799;
 import '../../core/network/database_requester.dart' as _i384;
+import '../../feature/alerts/data/datasource/alerts_datasource.dart' as _i567;
+import '../../feature/alerts/data/datasource/alerts_local.dart' as _i542;
+import '../../feature/alerts/data/repositories/alerts_repository_impl.dart'
+    as _i1042;
+import '../../feature/alerts/domain/repositories/alerts_repository.dart'
+    as _i422;
+import '../../feature/alerts/domain/usecases/dismiss_alert_usecase.dart'
+    as _i496;
+import '../../feature/alerts/domain/usecases/undo_dismiss_usecase.dart'
+    as _i564;
+import '../../feature/alerts/domain/usecases/watch_active_alerts_usecase.dart'
+    as _i565;
+import '../../feature/alerts/presentation/bloc/alerts/alerts_bloc.dart'
+    as _i250;
 import '../../feature/telemetry/data/datasource/telemetry_datasource.dart'
     as _i64;
 import '../../feature/telemetry/data/datasource/telemetry_local.dart' as _i862;
@@ -25,6 +39,8 @@ import '../../feature/telemetry/domain/repositories/telemetry_repository.dart'
     as _i757;
 import '../../feature/telemetry/domain/usecases/fetch_vehicles_usecase.dart'
     as _i538;
+import '../../feature/telemetry/domain/usecases/watch_fleet_history.dart'
+    as _i382;
 import '../../feature/telemetry/domain/usecases/watch_fleet_status_usecase.dart'
     as _i407;
 import '../../feature/telemetry/domain/usecases/watch_vehicle_usecase%20copy.dart'
@@ -35,6 +51,9 @@ import '../../feature/telemetry/presentation/bloc/telemetry/telemetry_bloc.dart'
     as _i903;
 import '../../feature/telemetry/presentation/bloc/vehicle/vehicle_bloc.dart'
     as _i1062;
+import '../../feature/telemetry/presentation/bloc/vehicle_details/vehicle_details_bloc.dart'
+    as _i129;
+import '../../feature/theme/cubit/theme_cubit.dart' as _i99;
 import '../routes/route.config.dart' as _i454;
 import '../routes/route_exports.dart' as _i750;
 
@@ -48,6 +67,7 @@ extension GetItInjectableX on _i174.GetIt {
     final routeModule = _$RouteModule();
     final duckDBModule = _$DuckDBModule();
     gh.singleton<_i750.GoRouter>(() => routeModule.router());
+    gh.singleton<_i99.ThemeCubit>(() => _i99.ThemeCubit());
     await gh.lazySingletonAsync<_i73.Database>(
       () => duckDBModule.openDatabase(),
       preResolve: true,
@@ -59,14 +79,39 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i384.DatabaseRequester>(
       () => _i384.DatabaseRequester(gh<_i73.Connection>()),
     );
+    gh.lazySingleton<_i567.AlertsDataSource>(
+      () => _i542.AlertsLocalDataSourceImpl(gh<_i384.DatabaseRequester>()),
+    );
+    gh.lazySingleton<_i422.AlertsRepository>(
+      () => _i1042.AlertsRepositoryImpl(gh<_i567.AlertsDataSource>()),
+    );
+    gh.lazySingleton<_i496.DismissAlertUsecase>(
+      () => _i496.DismissAlertUsecase(gh<_i422.AlertsRepository>()),
+    );
+    gh.lazySingleton<_i564.UndoDismissUsecase>(
+      () => _i564.UndoDismissUsecase(gh<_i422.AlertsRepository>()),
+    );
+    gh.lazySingleton<_i565.WatchActiveAlertsUsecase>(
+      () => _i565.WatchActiveAlertsUsecase(gh<_i422.AlertsRepository>()),
+    );
     gh.lazySingleton<_i64.TelemetryDataSource>(
       () => _i862.TelemetryLocalDataSourceImpl(gh<_i384.DatabaseRequester>()),
+    );
+    gh.factory<_i250.AlertsBloc>(
+      () => _i250.AlertsBloc(
+        gh<_i565.WatchActiveAlertsUsecase>(),
+        gh<_i496.DismissAlertUsecase>(),
+        gh<_i564.UndoDismissUsecase>(),
+      ),
     );
     gh.lazySingleton<_i757.TelemetryRepository>(
       () => _i701.TelemetryRepositoryImpl(gh<_i64.TelemetryDataSource>()),
     );
     gh.lazySingleton<_i538.FetchVehiclesUsecase>(
       () => _i538.FetchVehiclesUsecase(gh<_i757.TelemetryRepository>()),
+    );
+    gh.lazySingleton<_i382.WatchFleetHistory>(
+      () => _i382.WatchFleetHistory(gh<_i757.TelemetryRepository>()),
     );
     gh.lazySingleton<_i407.WatchFleetStatusUsecase>(
       () => _i407.WatchFleetStatusUsecase(gh<_i757.TelemetryRepository>()),
@@ -79,6 +124,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1062.VehicleBloc>(
       () => _i1062.VehicleBloc(gh<_i538.FetchVehiclesUsecase>()),
+    );
+    gh.factory<_i129.VehicleDetailsBloc>(
+      () => _i129.VehicleDetailsBloc(
+        gh<_i1066.WatchVehicleUsecase>(),
+        gh<_i382.WatchFleetHistory>(),
+      ),
     );
     gh.factory<_i903.TelemetryBloc>(
       () => _i903.TelemetryBloc(gh<_i1066.WatchVehicleUsecase>()),

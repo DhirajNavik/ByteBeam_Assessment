@@ -1,5 +1,7 @@
 {
-    "yaml.disableSchemaDetection": [],
+    "yaml.disableSchemaDetection": [
+        "file:///d%3A/tasks/bytebeam/bytebeam_assessment/analysis_options.yaml"
+    ],
     "yaml.schemas": {
         "https://www.schemastore.org/pubspec.json": "file:///d%3A/tasks/bytebeam/bytebeam_assessment/pubspec.yaml"
     }

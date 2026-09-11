@@ -21,16 +21,13 @@ abstract final class TelemetrySeeder {
 
     await _initializeStates(connection);
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 2),
-      (_) async {
-        try {
-          await _appendTelemetry(connection);
-        } catch (e) {
-          debugPrint('Telemetry seeder error: $e');
-        }
-      },
-    );
+    _timer = Timer.periodic(const Duration(seconds: 2), (_) async {
+      try {
+        await _appendTelemetry(connection);
+      } catch (e) {
+        debugPrint('Telemetry seeder error: $e');
+      }
+    });
   }
 
   /// Stop the seeder.
@@ -42,9 +39,7 @@ abstract final class TelemetrySeeder {
   // State bootstrap — runs once on [start]
 
   static Future<void> _initializeStates(Connection connection) async {
-    final vehicleResult = await connection.query(
-      VehicleQuery.fetchAllProfiles,
-    );
+    final vehicleResult = await connection.query(VehicleQuery.fetchAllProfiles);
     final vehicleRows = vehicleResult.fetchAll();
     await vehicleResult.dispose();
 
@@ -97,20 +92,75 @@ abstract final class TelemetrySeeder {
         _states[vehicleId] = state;
       }
     } else {
-      // No history — create fresh states
+      // No history — create fresh states with deliberately wide, per-vehicle
+      // variation so the fleet doesn't look cloned on first launch.
       final rng = Random();
-      for (final entry in vehicleMap.entries) {
-        _states[entry.key] = SimulationState(
+
+      final entries = vehicleMap.entries.toList();
+
+      // Assign SOC by walking a shuffled "strata" list so we're guaranteed a
+      // realistic spread: a few near-empty (charging), some low (alerting),
+      // most mid, some high — instead of pure uniform which clumps.
+      final socBuckets = <double>[];
+      for (var i = 0; i < entries.length; i++) {
+        final roll = i / entries.length;
+        if (roll < 0.05) {
+          // 5% near-empty — will start charging on tick 1
+          socBuckets.add(1.0 + rng.nextDouble() * 10);
+        } else if (roll < 0.20) {
+          // 15% low — will trigger the battery warning alert
+          socBuckets.add(11.0 + rng.nextDouble() * 15);
+        } else if (roll < 0.60) {
+          // 40% mid
+          socBuckets.add(40.0 + rng.nextDouble() * 25);
+        } else {
+          // 40% high
+          socBuckets.add(65.0 + rng.nextDouble() * 35);
+        }
+      }
+      socBuckets.shuffle(rng);
+
+      for (var i = 0; i < entries.length; i++) {
+        final entry = entries[i];
+        final soc = socBuckets[i].clamp(0.0, 100.0);
+
+        // Each vehicle gets its own jittered operating profile.
+        final batteryTemp = 22.0 + rng.nextDouble() * 22; // 22–44 °C
+        final odometer = rng.nextDouble() * 90000 + 5000; // 5k–95k km
+        final ignition = rng.nextDouble() < 0.9 ? 1 : 0; // 10% parked
+
+        final state = SimulationState(
           vehicleId: entry.key,
           maxSpeed: entry.value.maxSpeed,
           totalRange: entry.value.totalRange,
-          soc: 90.0 + rng.nextDouble() * 10,
-          batteryTemperature: 28.0 + rng.nextDouble() * 3,
-          rangeKm: entry.value.totalRange * 0.9,
-          odometer: 10000.0 + rng.nextDouble() * 5000,
-          ignition: 1,
+          batteryCapacityKwh: 25.0 + rng.nextDouble() * 40, // 25–65 kWh
+          // Scatter start positions a few km around Bengaluru.
+          startLatitude: 12.85 + rng.nextDouble() * 0.25,
+          startLongitude: 77.45 + rng.nextDouble() * 0.35,
+          destinationLatitude: 12.85 + rng.nextDouble() * 0.25,
+          destinationLongitude: 77.45 + rng.nextDouble() * 0.35,
+          soc: soc,
+          batteryTemperature: batteryTemp,
+          rangeKm: entry.value.totalRange * (soc / 100),
+          odometer: odometer,
+          ignition: ignition,
           lastSeen: DateTime.now(),
+          // Randomise which phase of the drive cycle each vehicle is in,
+          // so the fleet doesn't move in lockstep.
+          driving: ignition == 1 && rng.nextDouble() < 0.5,
+          drivingTicks: rng.nextInt(20),
+          stoppedTicks: rng.nextInt(8),
         );
+
+        // Vehicles that are near-empty start charging rather than trying
+        // to drive.
+        state.charging = state.soc <= 15;
+
+        if (state.driving) {
+          state.targetSpeed = state.maxSpeed * (0.3 + rng.nextDouble() * 0.5);
+        }
+
+        _states[entry.key] = state;
       }
     }
   }

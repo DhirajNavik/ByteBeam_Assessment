@@ -1,6 +1,8 @@
 enum AppRoutePath {
   initialPage(path: "/initialPage", pathName: "initialPage"),
-  home(path: "/home", pathName: "home");
+  detailsPage(path: "/detailsPage", pathName: "detailsPage"),
+  alertsPage(path: "/alertsPage", pathName: "alertsPage");
+  
 
   final String path;
   final String pathName;
