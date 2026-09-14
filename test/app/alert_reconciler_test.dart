@@ -1,5 +1,5 @@
-import 'package:bytebeam_assessment/core/alerts/alert_reconciler.dart';
-import 'package:bytebeam_assessment/core/alerts/alert_thresholds.dart';
+import 'package:bytebeam_assessment/core/database/utils/alert_reconciler.dart';
+import 'package:bytebeam_assessment/core/database/utils/alert_thresholds.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

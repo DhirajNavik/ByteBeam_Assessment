@@ -16,13 +16,30 @@ class AppRoutes {
           builder: (_, _) => FleetHomePage(),
         ),
 
-        GoRoute(
-          path: AppRoutePath.detailsPage.path,
-          name: AppRoutePath.detailsPage.pathName,
-          builder: (context, state) {
-            final vehicle = state.extra as VehicleEntity;
-            return VehicleDetailPage(vehicle: vehicle);
+        ShellRoute(
+          builder: (context, state, child) {
+            return BlocProvider(
+              create: (_) =>
+                  serviceLocator<GeofenceBloc>()
+                    ..add(const GeofenceEvent.watch()),
+              child: child,
+            );
           },
+          routes: [
+            GoRoute(
+              path: AppRoutePath.detailsPage.path,
+              name: AppRoutePath.detailsPage.pathName,
+              builder: (context, state) {
+                final vehicle = state.extra as VehicleEntity;
+                return VehicleDetailPage(vehicle: vehicle);
+              },
+            ),
+            GoRoute(
+              path: AppRoutePath.geofencePage.path,
+              name: AppRoutePath.geofencePage.pathName,
+              builder: (_, _) => GeofenceView(),
+            ),
+          ],
         ),
 
         GoRoute(

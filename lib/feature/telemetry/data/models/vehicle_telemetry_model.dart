@@ -16,6 +16,8 @@ abstract class VehicleTelemetryModel with _$VehicleTelemetryModel {
     required double? batteryTemp,
     required double? range,
     required double? odometer,
+    required double? latitude,
+    required double? longitude,
     required DateTime? lastPingAt,
     required FleetStatus status,
   }) = _VehicleTelemetryModel;
@@ -32,6 +34,8 @@ abstract class VehicleTelemetryModel with _$VehicleTelemetryModel {
       batteryTemp: (json[TelemetryTable.batteryTemp] as num?)?.toDouble(),
       range: (json[TelemetryTable.range] as num?)?.toDouble(),
       odometer: (json[TelemetryTable.odometer] as num?)?.toDouble(),
+      latitude: (json[TelemetryTable.latitude] as num?)?.toDouble(),
+      longitude: (json[TelemetryTable.longitude] as num?)?.toDouble(),
       lastPingAt: lastSeen,
       status: deriveVehicleStatus(
         ignition: ignition,
@@ -51,6 +55,8 @@ abstract class VehicleTelemetryModel with _$VehicleTelemetryModel {
       lastPingAt: lastPingAt,
       status: status,
       odometer: odometer,
+      latitude: latitude,
+      longitude: longitude,
     );
   }
 }

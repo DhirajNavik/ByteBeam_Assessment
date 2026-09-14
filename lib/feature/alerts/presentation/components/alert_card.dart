@@ -1,6 +1,6 @@
 // ── Abstract base (mirrors FileType) ────────────────────────────────────────
 
-import 'package:bytebeam_assessment/core/alerts/alert_thresholds.dart';
+import 'package:bytebeam_assessment/core/database/utils/alert_thresholds.dart';
 import 'package:bytebeam_assessment/core/extension/context_extension.dart';
 import 'package:bytebeam_assessment/core/extension/date_time_formatter.dart';
 import 'package:bytebeam_assessment/core/utils/app_palettes.dart';

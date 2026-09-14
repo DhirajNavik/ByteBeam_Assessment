@@ -1,4 +1,4 @@
-import 'package:bytebeam_assessment/core/alerts/alert_thresholds.dart';
+import 'package:bytebeam_assessment/core/database/utils/alert_thresholds.dart';
 import 'package:bytebeam_assessment/core/database/tables/alert.table.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
 import 'package:bytebeam_assessment/feature/alerts/domain/entities/alert_entity.dart';

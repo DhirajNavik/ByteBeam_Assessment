@@ -1,4 +1,4 @@
-import 'package:bytebeam_assessment/core/alerts/alert_thresholds.dart';
+import 'package:bytebeam_assessment/core/database/utils/alert_thresholds.dart';
 import 'package:equatable/equatable.dart';
 
 class AlertEntity extends Equatable {

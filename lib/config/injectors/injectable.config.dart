@@ -30,6 +30,25 @@ import '../../feature/alerts/domain/usecases/watch_active_alerts_usecase.dart'
     as _i565;
 import '../../feature/alerts/presentation/bloc/alerts/alerts_bloc.dart'
     as _i250;
+import '../../feature/geofence/data/datasources/geofence_datasource.dart'
+    as _i5;
+import '../../feature/geofence/data/datasources/geofence_local.dart' as _i620;
+import '../../feature/geofence/data/repositories/geofence_repository_impl.dart'
+    as _i802;
+import '../../feature/geofence/domain/repositories/geofence_repository.dart'
+    as _i718;
+import '../../feature/geofence/domain/usecases/create_geofence_usecase.dart'
+    as _i399;
+import '../../feature/geofence/domain/usecases/toggle_geofence_usecase.dart'
+    as _i404;
+import '../../feature/geofence/domain/usecases/update_geofence_usecase.dart'
+    as _i1034;
+import '../../feature/geofence/domain/usecases/watch_geofence_usecase.dart'
+    as _i423;
+import '../../feature/geofence/domain/usecases/watch_geofence_vehicle_count_usecase.dart'
+    as _i899;
+import '../../feature/geofence/presentation/bloc/geofence/geofence_bloc.dart'
+    as _i229;
 import '../../feature/telemetry/data/datasource/telemetry_datasource.dart'
     as _i64;
 import '../../feature/telemetry/data/datasource/telemetry_local.dart' as _i862;
@@ -82,6 +101,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i567.AlertsDataSource>(
       () => _i542.AlertsLocalDataSourceImpl(gh<_i384.DatabaseRequester>()),
     );
+    gh.lazySingleton<_i5.GeofenceDataSource>(
+      () => _i620.GeofenceLocalDataSourceImpl(gh<_i384.DatabaseRequester>()),
+    );
     gh.lazySingleton<_i422.AlertsRepository>(
       () => _i1042.AlertsRepositoryImpl(gh<_i567.AlertsDataSource>()),
     );
@@ -104,8 +126,41 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i564.UndoDismissUsecase>(),
       ),
     );
+    gh.lazySingleton<_i718.GeofenceRepository>(
+      () => _i802.GeofenceRepositoryImpl(gh<_i5.GeofenceDataSource>()),
+    );
+    gh.lazySingleton<_i399.CreateGeofenceUsecase>(
+      () => _i399.CreateGeofenceUsecase(gh<_i718.GeofenceRepository>()),
+    );
+    gh.lazySingleton<_i404.ToggleGeofenceUsecase>(
+      () => _i404.ToggleGeofenceUsecase(gh<_i718.GeofenceRepository>()),
+    );
+    gh.lazySingleton<_i1034.UpdateGeofenceUsecase>(
+      () => _i1034.UpdateGeofenceUsecase(gh<_i718.GeofenceRepository>()),
+    );
+    gh.lazySingleton<_i423.WatchGeofencesUsecase>(
+      () => _i423.WatchGeofencesUsecase(gh<_i718.GeofenceRepository>()),
+    );
+    gh.lazySingleton<_i899.WatchGeofenceVehicleCountsUsecase>(
+      () => _i899.WatchGeofenceVehicleCountsUsecase(
+        gh<_i718.GeofenceRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i899.WatchVehicleGeofencesUsecase>(
+      () => _i899.WatchVehicleGeofencesUsecase(gh<_i718.GeofenceRepository>()),
+    );
     gh.lazySingleton<_i757.TelemetryRepository>(
       () => _i701.TelemetryRepositoryImpl(gh<_i64.TelemetryDataSource>()),
+    );
+    gh.factory<_i229.GeofenceBloc>(
+      () => _i229.GeofenceBloc(
+        gh<_i423.WatchGeofencesUsecase>(),
+        gh<_i399.CreateGeofenceUsecase>(),
+        gh<_i1034.UpdateGeofenceUsecase>(),
+        gh<_i404.ToggleGeofenceUsecase>(),
+        gh<_i899.WatchGeofenceVehicleCountsUsecase>(),
+        gh<_i899.WatchVehicleGeofencesUsecase>(),
+      ),
     );
     gh.lazySingleton<_i538.FetchVehiclesUsecase>(
       () => _i538.FetchVehiclesUsecase(gh<_i757.TelemetryRepository>()),

@@ -8,6 +8,8 @@ class VehicleTelemetryEntity extends Equatable {
   final double? batteryTemp;
   final double? range;
   final double? odometer;
+  final double? latitude;
+  final double? longitude;
   final DateTime? lastPingAt;
   final FleetStatus status;
 
@@ -18,6 +20,8 @@ class VehicleTelemetryEntity extends Equatable {
     required this.batteryTemp,
     required this.range,
     required this.odometer,
+    required this.latitude,
+    required this.longitude,
     required this.lastPingAt,
     required this.status,
   });
@@ -32,13 +36,15 @@ class VehicleTelemetryEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-    vehicleId,
-    soc,
-    speed,
-    batteryTemp,
-    range,
-    odometer,
-    lastPingAt,
-    status,
-  ];
+        vehicleId,
+        soc,
+        speed,
+        batteryTemp,
+        range,
+        odometer,
+        latitude,
+        longitude,
+        lastPingAt,
+        status,
+      ];
 }

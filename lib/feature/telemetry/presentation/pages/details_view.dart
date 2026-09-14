@@ -4,10 +4,12 @@ import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/alerts/domain/entities/alert_entity.dart';
 import 'package:bytebeam_assessment/feature/alerts/presentation/bloc/alerts/alerts_bloc.dart';
 import 'package:bytebeam_assessment/feature/alerts/presentation/components/alert_tile.dart';
+import 'package:bytebeam_assessment/feature/geofence/presentation/components/vehicle_geofence_badge.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/soc_history_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/vehicle_details/vehicle_details_bloc.dart';
+import 'package:bytebeam_assessment/feature/telemetry/presentation/components/vehicle_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +24,6 @@ class VehicleDetailPage extends StatelessWidget {
       create: (_) => serviceLocator<VehicleDetailsBloc>()
         ..add(VehicleDetailsEvent.watch(vehicleId: vehicle.id))
         ..add(VehicleDetailsEvent.watchHistory(vehicleId: vehicle.id)),
-
       child: _VehicleDetailView(vehicle: vehicle),
     );
   }
@@ -50,22 +51,14 @@ class _VehicleDetailView extends StatelessWidget {
         child: BlocBuilder<VehicleDetailsBloc, VehicleDetailsState>(
           builder: (context, state) {
             return state.when(
-              initial: () {
-                return const SizedBox.shrink();
-              },
-              loading: () {
-                return const Center(child: CircularProgressIndicator());
-              },
-              loaded: (telemetry, history) {
-                return _buildLoaded(
-                  vehicle: vehicle,
-                  telemetry: telemetry,
-                  history: history,
-                );
-              },
-              error: (message) {
-                return _buildError(context, message);
-              },
+              initial: () => const SizedBox.shrink(),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              loaded: (telemetry, history) => _buildLoaded(
+                vehicle: vehicle,
+                telemetry: telemetry,
+                history: history,
+              ),
+              error: (message) => _buildError(context, message),
             );
           },
         ),
@@ -78,9 +71,8 @@ class _VehicleDetailView extends StatelessWidget {
     required List<SOCHistoryEntity> history,
     required VehicleTelemetryEntity? telemetry,
   }) {
-    if (telemetry == null) {
-      return SizedBox.shrink();
-    }
+    if (telemetry == null) return const SizedBox.shrink();
+
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(
         horizontal: Dimens.horizontalspacing,
@@ -88,9 +80,10 @@ class _VehicleDetailView extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: Dimens.widgetSpacing,
         children: [
-          _VehicleHeader(vehicle: vehicle, status: telemetry.status),
+          VehicleHeader(vehicle: vehicle, status: telemetry.status,telemetry: telemetry,),
+          SizedBox(height: Dimens.gapX4),
+          VehicleGeofenceBadge(vehicleId: vehicle.id),
           BlocBuilder<AlertsBloc, AlertsState>(
             builder: (context, state) {
               final alerts = state.maybeWhen(
@@ -98,22 +91,34 @@ class _VehicleDetailView extends StatelessWidget {
                     all.where((a) => a.vehicleId == vehicle.id).toList(),
                 orElse: () => const <AlertEntity>[],
               );
+              if (alerts.isEmpty) return const SizedBox.shrink();
               return Column(
-                spacing: Dimens.gapX2,
-                children: alerts.map((e) => AlertTile(alert: e)).toList(),
+                children: [
+                  SizedBox(height: Dimens.gapX3),
+                  ...alerts.map(
+                    (e) => Padding(
+                      padding: EdgeInsets.only(bottom: Dimens.gapX2),
+                      child: AlertTile(alert: e),
+                    ),
+                  ),
+                ],
               );
             },
           ),
-
+          SizedBox(height: Dimens.gapX4),
           _OverviewSection(telemetry: telemetry),
+          SizedBox(height: Dimens.gapX4),
           _SectionTitle(
             title: 'Live Location',
             trailing: telemetry.lastPingAt == null
                 ? null
                 : _formatAge(telemetry.lastPingAt!),
           ),
+          SizedBox(height: Dimens.gapX3),
           const _LiveLocationCard(),
+          SizedBox(height: Dimens.gapX4),
           const _SectionTitle(title: 'SOC History'),
+          SizedBox(height: Dimens.gapX3),
           _SocHistoryCard(values: history),
         ],
       ),
@@ -132,11 +137,9 @@ class _VehicleDetailView extends StatelessWidget {
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                context.read<VehicleDetailsBloc>().add(
-                  VehicleDetailsEvent.watch(vehicleId: vehicle.id),
-                );
-              },
+              onPressed: () => context.read<VehicleDetailsBloc>().add(
+                VehicleDetailsEvent.watch(vehicleId: vehicle.id),
+              ),
               child: const Text('Retry'),
             ),
           ],
@@ -145,96 +148,6 @@ class _VehicleDetailView extends StatelessWidget {
     );
   }
 }
-
-// -----------------------------------------------------------------------------
-// Vehicle header
-// -----------------------------------------------------------------------------
-
-class _VehicleHeader extends StatelessWidget {
-  const _VehicleHeader({required this.vehicle, required this.status});
-
-  final VehicleEntity vehicle;
-  final FleetStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE6EAF0)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 104,
-            height: 84,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F3F7),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.local_shipping_outlined,
-              size: 54,
-              color: Color(0xFF34495E),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  vehicle.registration,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  vehicle.model,
-                  style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
-                ),
-                const SizedBox(height: 10),
-                VehicleStatusChip(status: status),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on_outlined,
-                      size: 15,
-                      color: Colors.grey.shade600,
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        'Near Whitefield, Bengaluru',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// -----------------------------------------------------------------------------
-// Overview
-// -----------------------------------------------------------------------------
 
 class _OverviewSection extends StatelessWidget {
   const _OverviewSection({required this.telemetry});
@@ -301,10 +214,6 @@ class _OverviewSection extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// Reading card
-// -----------------------------------------------------------------------------
-
 class _ReadingCard extends StatelessWidget {
   const _ReadingCard({
     required this.icon,
@@ -369,10 +278,6 @@ class _ReadingCard extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// Verdict
-// -----------------------------------------------------------------------------
-
 enum _SignalVerdictType { normal, alert, stale, none }
 
 class _SignalVerdict {
@@ -389,9 +294,7 @@ class _VerdictPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (verdict.type == _SignalVerdictType.none) {
-      return const SizedBox.shrink();
-    }
+    if (verdict.type == _SignalVerdictType.none) return const SizedBox.shrink();
 
     final isAlert = verdict.type == _SignalVerdictType.alert;
     final isStale = verdict.type == _SignalVerdictType.stale;
@@ -425,10 +328,6 @@ class _VerdictPill extends StatelessWidget {
     );
   }
 }
-
-// -----------------------------------------------------------------------------
-// Live location
-// -----------------------------------------------------------------------------
 
 class _LiveLocationCard extends StatelessWidget {
   const _LiveLocationCard();
@@ -535,10 +434,6 @@ class _MapBadge extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// SOC history
-// -----------------------------------------------------------------------------
-
 class _SocHistoryCard extends StatelessWidget {
   const _SocHistoryCard({required this.values});
 
@@ -582,7 +477,7 @@ class _SocHistoryCard extends StatelessWidget {
           const SizedBox(height: 14),
           Expanded(
             child: values.length < 2
-                ? const _HistoryEmpty()
+                ? _HistoryEmpty()
                 : CustomPaint(
                     painter: _SocChartPainter(values),
                     child: const SizedBox.expand(),
@@ -595,8 +490,6 @@ class _SocHistoryCard extends StatelessWidget {
 }
 
 class _HistoryEmpty extends StatelessWidget {
-  const _HistoryEmpty();
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -608,10 +501,6 @@ class _HistoryEmpty extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// Section title
-// -----------------------------------------------------------------------------
-
 class _SectionTitle extends StatelessWidget {
   const _SectionTitle({required this.title, this.trailing});
 
@@ -621,7 +510,7 @@ class _SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: .end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
           title,
@@ -638,10 +527,6 @@ class _SectionTitle extends StatelessWidget {
     );
   }
 }
-
-// -----------------------------------------------------------------------------
-// Status chip
-// -----------------------------------------------------------------------------
 
 class VehicleStatusChip extends StatelessWidget {
   const VehicleStatusChip({super.key, required this.status});
@@ -675,19 +560,13 @@ class VehicleStatusChip extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// Verdict logic
-// -----------------------------------------------------------------------------
-
 _SignalVerdict _normalVerdict(VehicleTelemetryEntity telemetry) {
   if (telemetry.lastPingAt == null) {
     return const _SignalVerdict(type: _SignalVerdictType.none, label: '');
   }
-
   if (telemetry.isStale) {
     return const _SignalVerdict(type: _SignalVerdictType.stale, label: 'STALE');
   }
-
   return const _SignalVerdict(type: _SignalVerdictType.normal, label: 'NORMAL');
 }
 
@@ -695,15 +574,12 @@ _SignalVerdict _socVerdict(VehicleTelemetryEntity telemetry) {
   if (telemetry.soc == null) {
     return const _SignalVerdict(type: _SignalVerdictType.none, label: '');
   }
-
   if (telemetry.isStale) {
     return const _SignalVerdict(type: _SignalVerdictType.stale, label: 'STALE');
   }
-
   if (telemetry.soc! < 20) {
     return const _SignalVerdict(type: _SignalVerdictType.alert, label: 'ALERT');
   }
-
   return const _SignalVerdict(type: _SignalVerdictType.normal, label: 'NORMAL');
 }
 
@@ -711,15 +587,12 @@ _SignalVerdict _temperatureVerdict(VehicleTelemetryEntity telemetry) {
   if (telemetry.batteryTemp == null) {
     return const _SignalVerdict(type: _SignalVerdictType.none, label: '');
   }
-
   if (telemetry.isStale) {
     return const _SignalVerdict(type: _SignalVerdictType.stale, label: 'STALE');
   }
-
   if (telemetry.batteryTemp! > 45) {
     return const _SignalVerdict(type: _SignalVerdictType.alert, label: 'ALERT');
   }
-
   return const _SignalVerdict(type: _SignalVerdictType.normal, label: 'NORMAL');
 }
 
@@ -727,51 +600,29 @@ _SignalVerdict _pingVerdict(VehicleTelemetryEntity telemetry) {
   if (telemetry.lastPingAt == null) {
     return const _SignalVerdict(type: _SignalVerdictType.none, label: '');
   }
-
   if (telemetry.isStale) {
     return const _SignalVerdict(type: _SignalVerdictType.stale, label: 'STALE');
   }
-
   return const _SignalVerdict(type: _SignalVerdictType.normal, label: 'NORMAL');
 }
 
-// -----------------------------------------------------------------------------
-// Formatting
-// -----------------------------------------------------------------------------
-
 String _formatPercent(double? value) {
   if (value == null) return '—';
-
   return '${value.toStringAsFixed(0)}%';
 }
 
 String _formatValue(double? value, {required String suffix}) {
   if (value == null) return '—';
-
   return '${value.toStringAsFixed(0)}$suffix';
 }
 
 String _formatAge(DateTime timestamp) {
   final difference = DateTime.now().difference(timestamp);
-
-  if (difference.inSeconds < 60) {
-    return '${difference.inSeconds} sec ago';
-  }
-
-  if (difference.inMinutes < 60) {
-    return '${difference.inMinutes} min ago';
-  }
-
-  if (difference.inHours < 24) {
-    return '${difference.inHours} hr ago';
-  }
-
+  if (difference.inSeconds < 60) return '${difference.inSeconds} sec ago';
+  if (difference.inMinutes < 60) return '${difference.inMinutes} min ago';
+  if (difference.inHours < 24) return '${difference.inHours} hr ago';
   return '${difference.inDays} days ago';
 }
-
-// -----------------------------------------------------------------------------
-// Placeholder map painter
-// -----------------------------------------------------------------------------
 
 class _MapPlaceholderPainter extends CustomPainter {
   @override
@@ -814,16 +665,12 @@ class _MapPlaceholderPainter extends CustomPainter {
       );
 
     canvas.drawPath(road1, roadPaint);
-
     canvas.drawPath(road2, roadPaint);
-
     canvas.drawPath(majorRoad, majorRoadPaint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _RoutePainter extends CustomPainter {
@@ -857,28 +704,25 @@ class _RoutePainter extends CustomPainter {
 
     canvas.drawPath(path, routePaint);
 
-    final start = Offset(size.width * .18, size.height * .78);
-
-    final end = Offset(size.width * .79, size.height * .2);
-
     final markerPaint = Paint()
       ..color = const Color(0xFF168AFF)
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(start, 6, markerPaint);
-
-    canvas.drawCircle(end, 6, markerPaint);
+    canvas.drawCircle(
+      Offset(size.width * .18, size.height * .78),
+      6,
+      markerPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * .79, size.height * .2),
+      6,
+      markerPaint,
+    );
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-// -----------------------------------------------------------------------------
-// SOC chart painter
-// -----------------------------------------------------------------------------
 
 class _SocChartPainter extends CustomPainter {
   const _SocChartPainter(this.values);
@@ -904,20 +748,15 @@ class _SocChartPainter extends CustomPainter {
       ..color = const Color(0x3320A968)
       ..style = PaintingStyle.fill;
 
-    const horizontalLines = 4;
-
-    for (var i = 0; i <= horizontalLines; i++) {
-      final y = size.height * i / horizontalLines;
-
+    for (var i = 0; i <= 4; i++) {
+      final y = size.height * i / 4;
       canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
     }
 
-    // Only records with a timestamp can be plotted on the time axis.
-    final points = values.where((value) => value.time != null).toList();
+    final points = values.where((v) => v.time != null).toList()
+      ..sort((a, b) => a.time!.compareTo(b.time!));
 
     if (points.length < 2) return;
-
-    points.sort((a, b) => a.time!.compareTo(b.time!));
 
     final minTime = points.first.time!.millisecondsSinceEpoch;
     final maxTime = points.last.time!.millisecondsSinceEpoch;
@@ -926,16 +765,12 @@ class _SocChartPainter extends CustomPainter {
     final path = Path();
 
     for (var i = 0; i < points.length; i++) {
-      final point = points[i];
-
+      final p = points[i];
       final x = timeRange == 0
           ? size.width * i / (points.length - 1)
-          : ((point.time!.millisecondsSinceEpoch - minTime) / timeRange) *
+          : ((p.time!.millisecondsSinceEpoch - minTime) / timeRange) *
                 size.width;
-
-      final soc = point.soc.clamp(0.0, 100.0);
-
-      final y = size.height - ((soc / 100.0) * size.height);
+      final y = size.height - (p.soc.clamp(0.0, 100.0) / 100.0 * size.height);
 
       if (i == 0) {
         path.moveTo(x, y);
@@ -954,7 +789,5 @@ class _SocChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _SocChartPainter oldDelegate) {
-    return oldDelegate.values != values;
-  }
+  bool shouldRepaint(covariant _SocChartPainter old) => old.values != values;
 }

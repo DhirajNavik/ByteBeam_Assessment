@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:bytebeam_assessment/core/alerts/alert_reconciler.dart';
-import 'package:bytebeam_assessment/core/alerts/alert_thresholds.dart';
+import 'package:bytebeam_assessment/core/database/utils/alert_reconciler.dart';
+import 'package:bytebeam_assessment/core/database/utils/alert_thresholds.dart';
 import 'package:bytebeam_assessment/core/database/queries/alert.query.dart';
 import 'package:bytebeam_assessment/core/network/database_requester.dart';
 import 'package:bytebeam_assessment/feature/alerts/data/datasource/alerts_datasource.dart';
