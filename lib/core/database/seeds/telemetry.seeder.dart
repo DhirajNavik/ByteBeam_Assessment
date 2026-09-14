@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:bytebeam_assessment/core/database/db_path.dart';
+import 'package:bytebeam_assessment/core/database/utils/db_path.dart';
 import 'package:bytebeam_assessment/core/database/queries/telemetry.query.dart';
 import 'package:bytebeam_assessment/core/database/queries/vehicle.query.dart';
 import 'package:bytebeam_assessment/core/database/utils/fleet_geo_constants.dart';

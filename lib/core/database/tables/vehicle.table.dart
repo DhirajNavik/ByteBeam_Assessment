@@ -1,5 +1,5 @@
 
-import 'package:bytebeam_assessment/core/database/db_path.dart';
+import 'package:bytebeam_assessment/core/database/utils/db_path.dart';
 
 abstract final class VehicleTable {
   VehicleTable._();

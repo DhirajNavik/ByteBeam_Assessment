@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
-import 'db_path.dart';
+import 'utils/db_path.dart';
 import 'duck_db_schema.dart';
 
 @module

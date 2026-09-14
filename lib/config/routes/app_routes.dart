@@ -49,5 +49,14 @@ class AppRoutes {
         ),
       ],
     ),
+    GoRoute(
+      path: AppRoutePath.tripsPage.path,
+      name: AppRoutePath.tripsPage.pathName,
+      builder: (_, _) => BlocProvider(
+        create: (_) =>
+            serviceLocator<TripsBloc>()..add(const TripsEvent.watch()),
+        child: const TripsView(),
+      ),
+    ),
   ];
 }

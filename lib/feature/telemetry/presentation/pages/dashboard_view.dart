@@ -104,14 +104,17 @@ class _FleetHomePageState extends State<FleetHomePage> {
             ),
             actions: [
               IconButton(
-                onPressed: () =>
-                    context.push(AppRoutePath.geofencePage.path),
+                onPressed: () => context.push(AppRoutePath.tripsPage.path),
+                icon: const Icon(Icons.route_outlined),
+                tooltip: 'Trips',
+              ),
+              IconButton(
+                onPressed: () => context.push(AppRoutePath.geofencePage.path),
                 icon: const Icon(Icons.radar_rounded),
                 tooltip: 'Geofences',
               ),
               IconButton(
-                onPressed: () =>
-                    context.push(AppRoutePath.alertsPage.path),
+                onPressed: () => context.push(AppRoutePath.alertsPage.path),
                 icon: const Icon(Icons.notifications_outlined),
                 tooltip: 'Alerts',
               ),
@@ -147,10 +150,9 @@ class _SeedingView extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               'Fleet Console',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
             Text(

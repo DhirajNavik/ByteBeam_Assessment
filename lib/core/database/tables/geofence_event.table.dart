@@ -1,4 +1,4 @@
-import 'package:bytebeam_assessment/core/database/db_path.dart';
+import 'package:bytebeam_assessment/core/database/utils/db_path.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
 
 abstract final class GeofenceEventTable {

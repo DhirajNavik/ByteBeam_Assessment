@@ -1,4 +1,4 @@
-import '../db_path.dart';
+import '../utils/db_path.dart';
 import 'vehicle.table.dart';
 
 abstract final class TelemetryTable {

@@ -73,6 +73,13 @@ import '../../feature/telemetry/presentation/bloc/vehicle/vehicle_bloc.dart'
 import '../../feature/telemetry/presentation/bloc/vehicle_details/vehicle_details_bloc.dart'
     as _i129;
 import '../../feature/theme/cubit/theme_cubit.dart' as _i99;
+import '../../feature/trips/data/datasources/trip_datasource.dart' as _i84;
+import '../../feature/trips/data/datasources/trip_local.dart' as _i981;
+import '../../feature/trips/data/repositories/trip_repository_impl.dart'
+    as _i910;
+import '../../feature/trips/domain/repositories/trip_repository.dart' as _i759;
+import '../../feature/trips/domain/usecases/watch_trips_usecase.dart' as _i825;
+import '../../feature/trips/presentation/trips/trips_bloc.dart' as _i412;
 import '../routes/route.config.dart' as _i454;
 import '../routes/route_exports.dart' as _i750;
 
@@ -104,8 +111,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i5.GeofenceDataSource>(
       () => _i620.GeofenceLocalDataSourceImpl(gh<_i384.DatabaseRequester>()),
     );
+    gh.lazySingleton<_i84.TripsDataSource>(
+      () => _i981.TripsLocalDataSourceImpl(gh<_i384.DatabaseRequester>()),
+    );
     gh.lazySingleton<_i422.AlertsRepository>(
       () => _i1042.AlertsRepositoryImpl(gh<_i567.AlertsDataSource>()),
+    );
+    gh.lazySingleton<_i759.TripsRepository>(
+      () => _i910.TripsRepositoryImpl(gh<_i84.TripsDataSource>()),
     );
     gh.lazySingleton<_i496.DismissAlertUsecase>(
       () => _i496.DismissAlertUsecase(gh<_i422.AlertsRepository>()),
@@ -129,6 +142,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i718.GeofenceRepository>(
       () => _i802.GeofenceRepositoryImpl(gh<_i5.GeofenceDataSource>()),
     );
+    gh.lazySingleton<_i825.WatchTripsUsecase>(
+      () => _i825.WatchTripsUsecase(gh<_i759.TripsRepository>()),
+    );
     gh.lazySingleton<_i399.CreateGeofenceUsecase>(
       () => _i399.CreateGeofenceUsecase(gh<_i718.GeofenceRepository>()),
     );
@@ -151,6 +167,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i757.TelemetryRepository>(
       () => _i701.TelemetryRepositoryImpl(gh<_i64.TelemetryDataSource>()),
+    );
+    gh.factory<_i412.TripsBloc>(
+      () => _i412.TripsBloc(gh<_i825.WatchTripsUsecase>()),
     );
     gh.factory<_i229.GeofenceBloc>(
       () => _i229.GeofenceBloc(

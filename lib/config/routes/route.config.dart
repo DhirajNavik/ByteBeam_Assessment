@@ -7,6 +7,8 @@ import 'package:bytebeam_assessment/feature/geofence/presentation/bloc/geofence/
 import 'package:bytebeam_assessment/feature/geofence/presentation/pages/geofence_view.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/pages/details_view.dart';
+import 'package:bytebeam_assessment/feature/trips/presentation/pages/trips_view.dart';
+import 'package:bytebeam_assessment/feature/trips/presentation/trips/trips_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'route_exports.dart';

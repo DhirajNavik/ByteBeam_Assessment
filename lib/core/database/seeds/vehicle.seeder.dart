@@ -1,7 +1,7 @@
 import 'package:bytebeam_assessment/core/models/vehicle_model.dart';
 import 'package:dart_duckdb/dart_duckdb.dart';
 
-import '../db_path.dart';
+import '../utils/db_path.dart';
 
 abstract final class VehicleSeeder {
   VehicleSeeder._();
