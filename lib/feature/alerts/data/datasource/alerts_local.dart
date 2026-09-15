@@ -17,6 +17,7 @@ class AlertsLocalDataSourceImpl implements AlertsDataSource {
   AlertsLocalDataSourceImpl(this._database);
 
   Timer? _reconcileTimer;
+  bool _tickInFlight = false;
 
   @override
   void startReconciliation() {
@@ -39,6 +40,8 @@ class AlertsLocalDataSourceImpl implements AlertsDataSource {
   }
 
   Future<void> _tick() async {
+    if (_tickInFlight) return;
+    _tickInFlight = true;
     try {
       final readingRows = await _database.query(
         AlertQuery.fetchLatestReadingsForReconciliation,
@@ -116,10 +119,9 @@ class AlertsLocalDataSourceImpl implements AlertsDataSource {
         }
       }
     } catch (e) {
-      // A missed tick just means we evaluate again in 3s against
-      // whatever telemetry has landed by then — never surface this to
-      // the UI as an alert-stream error.
-      debugPrint('Alert reconciliation tick failed: $e');
+       debugPrint('Alert reconciliation tick failed: $e');
+    }finally {
+      _tickInFlight = false;    
     }
   }
 
@@ -150,7 +152,11 @@ class AlertsLocalDataSourceImpl implements AlertsDataSource {
     required DismissReason reason,
   }) async {
     await _database.query(
-      AlertQuery.dismiss(alertId: alertId, reason: reason.label, at: DateTime.now()),
+      AlertQuery.dismiss(
+        alertId: alertId,
+        reason: reason.label,
+        at: DateTime.now(),
+      ),
     );
   }
 

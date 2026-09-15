@@ -2,6 +2,7 @@ import 'package:bytebeam_assessment/core/database/queries/telemetry.query.dart';
 import 'package:bytebeam_assessment/core/database/queries/vehicle.query.dart';
 import 'package:bytebeam_assessment/core/database/tables/telemetry.table.dart';
 import 'package:bytebeam_assessment/core/database/tables/vehicle.table.dart';
+import 'package:bytebeam_assessment/core/database/utils/retention_policy.dart';
 import 'package:bytebeam_assessment/core/network/database_requester.dart';
 import 'package:bytebeam_assessment/core/extension/duck_db_parser_extension.dart';
 import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
@@ -17,6 +18,7 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
   final DatabaseRequester _database;
 
   const TelemetryLocalDataSourceImpl(this._database);
+  static Duration get _socHistoryWindow => RetentionPolicy.hotWindow;
   @override
   Future<List<VehicleModel>> fetchVehicles() async {
     final response = await _database.query(VehicleQuery.fetchAllVehicles);
@@ -77,7 +79,10 @@ class TelemetryLocalDataSourceImpl implements TelemetryDataSource {
   Stream<List<SOCHistoryModel>> watchSocHistory(int vehicleId) async* {
     while (true) {
       final response = await _database.query(
-        TelemetryQuery.fetchSocHistory(vehicleId),
+        TelemetryQuery.fetchSocHistory(
+          vehicleId,
+          since: DateTime.now().subtract(_socHistoryWindow),
+        ),
       );
       yield response.parseList(SOCHistoryModel.fromLocalJson, [
         TelemetryTable.sequenceId,

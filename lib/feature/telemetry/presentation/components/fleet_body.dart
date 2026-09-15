@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bytebeam_assessment/config/routes/app_route_path.dart';
+import 'package:bytebeam_assessment/core/utils/app_startup.dart';
 import 'package:bytebeam_assessment/core/utils/vehicle_status.dart';
 import 'package:bytebeam_assessment/feature/alerts/presentation/components/fleet_alerts_summary.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_entity.dart';
@@ -30,6 +31,8 @@ class _FleetBodyState extends State<FleetBody> {
   final Set<int> _visibleIds = {};
   Timer? _debounce;
 
+  bool _reportedFirstPaint = false;
+
   @override
   void dispose() {
     _debounce?.cancel();
@@ -48,6 +51,17 @@ class _FleetBodyState extends State<FleetBody> {
       if (!mounted) return;
       context.read<TelemetryBloc>().add(
         TelemetryEvent.watch(_visibleIds.toList()),
+      );
+    });
+  }
+
+  void _reportFirstPaint() {
+    if (_reportedFirstPaint || !AppStartup.isMarked) return;
+    _reportedFirstPaint = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      debugPrint(
+        'COLD_START_TO_FLEET_LIST: ${AppStartup.elapsedMs}ms',
       );
     });
   }
@@ -93,6 +107,10 @@ class _FleetBodyState extends State<FleetBody> {
     Map<int, VehicleTelemetryEntity> detailByVehicle,
   ) {
     final filtered = _filter(vehicles, statusByVehicle);
+
+    if (filtered.isNotEmpty) {
+      _reportFirstPaint();
+    }
 
     return Column(
       children: [

@@ -9,4 +9,5 @@ class DBPath {
   static const String geofencesTable = 'geofences';
   static const String geofenceEventsTable = 'geofenceEvents';
   static const String tripsTable = 'trips';
+  static const String telemetryHourlyTable = 'telemetryHourly';
 }
