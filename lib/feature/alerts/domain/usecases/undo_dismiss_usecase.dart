@@ -11,7 +11,7 @@ final class UndoDismissUsecase extends UseCase<Unit, int> {
   UndoDismissUsecase(this._repository);
 
   @override
-  Future<Either<Failure, Unit>> call(int alertId) {
-    return _repository.undoDismiss(alertId);
+  Future<Either<Failure, Unit>> call(int params) {
+    return _repository.undoDismiss(params);
   }
 }

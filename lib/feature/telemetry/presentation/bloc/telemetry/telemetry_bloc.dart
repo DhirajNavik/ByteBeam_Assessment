@@ -3,7 +3,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:bytebeam_assessment/config/routes/route_exports.dart';
 import 'package:bytebeam_assessment/core/usecase/failures.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
-import 'package:bytebeam_assessment/feature/telemetry/domain/usecases/watch_vehicle_usecase%20copy.dart';
+import 'package:bytebeam_assessment/feature/telemetry/domain/usecases/watch_vehicle_usecase.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

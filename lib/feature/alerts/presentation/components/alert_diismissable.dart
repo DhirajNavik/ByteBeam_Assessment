@@ -2,7 +2,7 @@ import 'package:bytebeam_assessment/core/components/common_slidable_container.da
 import 'package:bytebeam_assessment/core/extension/context_extension.dart';
 import 'package:bytebeam_assessment/core/utils/app_images.dart';
 import 'package:bytebeam_assessment/core/utils/dimens.dart';
-import 'package:bytebeam_assessment/core/utils/sizedBox.dart';
+import 'package:bytebeam_assessment/core/utils/sized_box.dart';
 import 'package:bytebeam_assessment/feature/alerts/domain/entities/alert_entity.dart';
 import 'package:flutter/material.dart';
 

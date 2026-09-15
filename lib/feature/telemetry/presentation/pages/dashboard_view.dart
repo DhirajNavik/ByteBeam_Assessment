@@ -16,7 +16,6 @@ import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/telemetr
 import 'package:bytebeam_assessment/feature/telemetry/presentation/bloc/vehicle/vehicle_bloc.dart';
 import 'package:bytebeam_assessment/feature/telemetry/presentation/components/fleet_body.dart';
 import 'package:dart_duckdb/dart_duckdb.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -160,27 +159,6 @@ class _FleetHomePageState extends State<FleetHomePage> {
     );
   }
 
-  List<Widget> _debugActions() {
-    if (!kDebugMode) return const [];
-    return [
-      IconButton(
-        onPressed: _debugTaskRunning ? null : _runBackfill,
-        icon: const Icon(Icons.dataset_outlined),
-        tooltip: 'Backfill 2M rows',
-      ),
-      IconButton(
-        onPressed: _debugTaskRunning ? null : _runBenchmark,
-        icon: const Icon(Icons.timer_outlined),
-        tooltip: 'Benchmark queries',
-      ),
-      IconButton(
-        onPressed: _debugTaskRunning ? null : _runRetention,
-        icon: const Icon(Icons.compress),
-        tooltip: 'Run retention/compaction',
-      ),
-    ];
-  }
-
   @override
   void dispose() {
     _vehicleBloc.close();
@@ -224,7 +202,21 @@ class _FleetHomePageState extends State<FleetHomePage> {
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             actions: [
-              ..._debugActions(),
+              IconButton(
+                onPressed: _debugTaskRunning ? null : _runBackfill,
+                icon: const Icon(Icons.dataset_outlined),
+                tooltip: 'Backfill 2M rows',
+              ),
+              IconButton(
+                onPressed: _debugTaskRunning ? null : _runBenchmark,
+                icon: const Icon(Icons.timer_outlined),
+                tooltip: 'Benchmark queries',
+              ),
+              IconButton(
+                onPressed: _debugTaskRunning ? null : _runRetention,
+                icon: const Icon(Icons.compress),
+                tooltip: 'Run retention/compaction',
+              ),
               IconButton(
                 onPressed: () => context.push(AppRoutePath.geofencePage.path),
                 icon: const Icon(Icons.radar_rounded),

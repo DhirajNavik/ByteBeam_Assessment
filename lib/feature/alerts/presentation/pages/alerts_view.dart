@@ -1,6 +1,6 @@
 import 'package:bytebeam_assessment/config/routes/route_exports.dart';
 import 'package:bytebeam_assessment/core/utils/dimens.dart';
-import 'package:bytebeam_assessment/core/utils/sizedBox.dart';
+import 'package:bytebeam_assessment/core/utils/sized_box.dart';
 import 'package:bytebeam_assessment/feature/alerts/domain/entities/alert_entity.dart';
 import 'package:bytebeam_assessment/feature/alerts/presentation/bloc/alerts/alerts_bloc.dart';
 import 'package:bytebeam_assessment/feature/alerts/presentation/components/alert_diismissable.dart';

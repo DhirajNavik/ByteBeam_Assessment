@@ -16,7 +16,7 @@ class VehicleGeofenceBadge extends StatelessWidget {
     return BlocBuilder<GeofenceBloc, GeofenceState>(
       builder: (context, state) {
         final memberships = state.maybeWhen(
-          loaded: (_, __, vehicleGeofences) => vehicleGeofences
+          loaded: (_, _, vehicleGeofences) => vehicleGeofences
               .where((v) => v.vehicleId == vehicleId)
               .toList(),
           orElse: () => <VehicleGeofenceEntity>[],

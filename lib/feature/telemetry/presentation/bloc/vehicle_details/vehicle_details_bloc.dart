@@ -4,7 +4,7 @@ import 'package:bytebeam_assessment/config/routes/route_exports.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/soc_history_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/entities/vehicle_telemetry_entity.dart';
 import 'package:bytebeam_assessment/feature/telemetry/domain/usecases/watch_fleet_history.dart';
-import 'package:bytebeam_assessment/feature/telemetry/domain/usecases/watch_vehicle_usecase%20copy.dart';
+import 'package:bytebeam_assessment/feature/telemetry/domain/usecases/watch_vehicle_usecase.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'vehicle_details_event.dart';
