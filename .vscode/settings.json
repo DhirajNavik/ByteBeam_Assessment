@@ -3,6 +3,7 @@
         "file:///d%3A/tasks/bytebeam/bytebeam_assessment/analysis_options.yaml"
     ],
     "yaml.schemas": {
-        "https://www.schemastore.org/pubspec.json": "file:///d%3A/tasks/bytebeam/bytebeam_assessment/pubspec.yaml"
+        "https://www.schemastore.org/pubspec.json": "file:///d%3A/tasks/bytebeam/bytebeam_assessment/pubspec.yaml",
+        "https://www.schemastore.org/github-workflow.json": "file:///d%3A/tasks/bytebeam/bytebeam_assessment/.github/workflows/main.yaml"
     }
 }
