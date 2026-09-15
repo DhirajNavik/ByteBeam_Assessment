@@ -65,8 +65,8 @@ final class MemoryReport {
 abstract final class ScaleBenchmark {
   ScaleBenchmark._();
 
-  static const int defaultWarmup = 10;
-  static const int defaultRuns = 100;
+  static const int defaultWarmup = 3;
+  static const int defaultRuns = 15;
 
   /// Times the fleet-list query — the one that backs the status chips and
   /// the filter counts on Fleet Home.

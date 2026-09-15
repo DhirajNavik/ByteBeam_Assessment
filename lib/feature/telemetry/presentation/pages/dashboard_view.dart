@@ -108,6 +108,13 @@ class _FleetHomePageState extends State<FleetHomePage> {
     if (_debugTaskRunning) return;
     setState(() => _debugTaskRunning = true);
 
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Running benchmark queries (warmup + iterations)...'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+
     try {
       final database = serviceLocator<DatabaseRequester>();
       final summary = await ScaleBenchmark.runAll(database, sampleVehicleId: 1);
